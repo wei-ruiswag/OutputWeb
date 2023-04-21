@@ -57,6 +57,7 @@
 <script type="text/javascript">
     function login() {
         var loginName = $("#loginName").val();
+        console.log(100);
         if (!validPhoneNumber(loginName)) {
             Swal.fire({
                 text: "请输入正确的登录名(即手机号)",
@@ -88,8 +89,10 @@
             url: url,
             data: params,
             success: function (result) {
+                console.log(result);
                 if (result.resultCode == 200) {
                     window.location.href = '/index';
+                    console.log(result);
                 } else {
                     Swal.fire({
                         text: result.message,
