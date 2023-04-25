@@ -48,8 +48,8 @@ input, textarea, select, button {
 }
 
 .btn-success {
-    background: green;
-    border-color: green;
+    background: #252020;
+    border-color: #252020;
     color: #fff;
 }
 
@@ -122,7 +122,7 @@ a {
 }
 
 a:hover {
-    color: #1baeae;
+    color: #FFFFFF;
     text-decoration: none
 }
 

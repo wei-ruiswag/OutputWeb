@@ -17,6 +17,9 @@ public class PersonalController {
     @GetMapping("/personal")
     public String personalPage(HttpServletRequest request,
                                HttpSession httpSession) {
+//        httpSession=request.getSession();
+//        httpSession.setAttribute("path", "personal");
+//        request.getSession().setAttribute("path", "personal");
         request.setAttribute("path", "personal");
         return "personal";
     }

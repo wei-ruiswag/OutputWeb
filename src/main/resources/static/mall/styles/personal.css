@@ -21,7 +21,7 @@
     height: 40px;
     line-height: 40px;
     font-size: 19px;
-    margin: 10px 20px 10px 40px;
+    margin: 30px 20px 10px 40px;
     color: #333;
 }
 
@@ -73,7 +73,7 @@
 
 #personal .self-info .intro .info_item span:nth-of-type(1) {
     display: inline-block;
-    font-size: 17px;
+    font-size: 15px;
     font-weight: bold;
     color: #161616;
     width: 70px;

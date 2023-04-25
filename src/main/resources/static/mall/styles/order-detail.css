@@ -203,8 +203,8 @@
 }
 
 .btn-primary {
-    background: #1baeae;
-    border-color: #1baeae;
+    background: #202525;
+    border-color: #202525;
     color: #fff;
 }
 
@@ -259,14 +259,14 @@
 .order-view-box .uc-order-item .progress-list .step-active {
     border-top-right-radius: 20px;
     border-bottom-right-radius: 20px;
-    background-color: #83c44e;
+    background-color: #181918;
     color: #fff;
 }
 
 .order-view-box .uc-order-item .progress-list .step-first {
     border-top-left-radius: 20px;
     border-bottom-left-radius: 20px;
-    background-color: #83c44e;
+    background-color: #252020;
     color: #fff;
 }
 .order-view-box .uc-order-item .progress-list .step {
@@ -276,7 +276,7 @@
 }
 
 .order-view-box .uc-order-item .progress-list .step-done {
-    background-color: #83c44e;
+    background-color: #252020;
     color: #fff
 }
 
@@ -364,10 +364,11 @@ td {
 
 .order-view-box .uc-order-item .order-items-table .price {
     margin: 0;
+    margin-left: 330px;
 }
 
 .order-view-box .uc-order-item .order-items-table .col-actions {
-    width: 120px;
+    width: 100px;
     padding: 0;
     text-align: right;
 }
@@ -430,7 +431,7 @@ td {
 }
 .order-view-box .uc-order-item .order-detail-total .total-table td {
     text-align: right;
-    color: #1baeae;
+    color: #202525;
 }
 
 .order-view-box .uc-order-item .order-detail-total .total-table th.total, .order-view-box .uc-order-item .order-detail-total .total-table td.total {

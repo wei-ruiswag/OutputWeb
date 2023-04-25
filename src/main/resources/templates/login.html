@@ -39,7 +39,7 @@
                         <input class="login-info-input verify-code" type="text" name="verifyCode"
                                placeholder="请输入验证码" id="verifyCode"/>
                         <img alt="单击图片刷新！" style="top: 16px;position: relative;" th:src="@{/common/mall/kaptcha}"
-                             onclick="this.src='/common/mall/kaptcha?d='+new Date()*1">
+                             onclick="this.src='http://175.178.153.116:8080/kaptcha?d='+new Date()*1">
                     </div>
                 </div>
                 <div class="login_submit">
@@ -57,7 +57,6 @@
 <script type="text/javascript">
     function login() {
         var loginName = $("#loginName").val();
-        console.log(100);
         if (!validPhoneNumber(loginName)) {
             Swal.fire({
                 text: "请输入正确的登录名(即手机号)",
@@ -82,17 +81,25 @@
             return false;
         }
         //验证
-        var params = $("#loginForm").serialize();
-        var url = 'http://175.178.153.116:8080/login';
         $.ajax({
             type: 'POST',//方法类型
-            url: url,
-            data: params,
+            url: 'http://175.178.153.116:8080/login',
+            data: $("#loginForm").serialize(),
+            xhrFields:{
+                withCredentials:true
+            },
             success: function (result) {
                 console.log(result);
                 if (result.resultCode == 200) {
-                    window.location.href = '/index';
-                    console.log(result);
+
+                    //window.location.href = '/personal';
+                    window.sessionStorage.setItem("nickName",result.data.nickName);
+                    window.sessionStorage.setItem("loginName",result.data.loginName);
+                    window.sessionStorage.setItem("address",result.data.address);
+                    window.sessionStorage.setItem("shopCartItemCount",result.data.shopCartItemCount);
+                    window.sessionStorage.setItem("userId",result.data.userId);
+                    window.sessionStorage.setItem("introduceSign",result.data.introduceSign);
+                    // console.log(window.sessionStorage.getItem("user").toString());
                 } else {
                     Swal.fire({
                         text: result.message,
