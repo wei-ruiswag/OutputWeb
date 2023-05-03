@@ -1,2 +1,7 @@
 server:
   port: 8081
+
+  session:
+    cookie:
+      secure: false
+

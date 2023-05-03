@@ -17,12 +17,12 @@
     <div class="banner_x center">
         <a th:href="@{/index}" class="logo"><h1>Output商城</h1></a>
         <div class="fr">
-            <div class="search">
-                <input class="text" type="text" id="keyword" autocomplete="off">
-                <div class="search_hot">
-                </div>
-            </div>
-            <div class="button iconfont icon-search" onclick="search()"></div>
+<!--            <div class="search">-->
+<!--                <input class="text" type="text" id="keyword" autocomplete="off">-->
+<!--                <div class="search_hot">-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="button iconfont icon-search" onclick="search()"></div>-->
         </div>
     </div>
 </nav>
@@ -34,18 +34,18 @@
         <div th:replace="personal-sidebar::sidebar-fragment"></div>
 
         <div class="intro fr">
-            <div class="grzlbt ml40">我的资料 <a href="javascript:openUpdateModal();"
-                                             style="color:#95a8aa;margin-left: 600px;">更改个人信息</a>
+            <div class="grzlbt ml40">我的资料 <a href="javascript:openUpdateModal();" onclick="getValue()"
+                                             style="color:#95a8aa;margin-left: 600px; font-size: 12px;">更改个人信息</a>
             </div>
-            <div class="info_item ml40" ><span>昵称</span><span><p id="StaticNickName">output</p></span>
+            <div class="info_item ml40" ><span>昵称</span><span id="StaticNickName">output</span>
             </div>
-            <div class="info_item ml40" ><span>手机号码</span><span><p id="StaticLoginName">output</p></span>
+            <div class="info_item ml40" ><span>手机号码</span><span id="StaticLoginName">output\</span>
             </div>
-            <div class="info_item ml40"><span>密码</span><span>******</span>
+            <div class="info_item ml40"><span>密码</span><span id="">******</span>
             </div>
-            <div class="info_item ml40"><span>个性签名</span><span><p id="StaticIntroduceSign">output</p></span>
+            <div class="info_item ml40" ><span>个性签名</span><span id="StaticIntroduceSign">output</span>
             </div>
-            <div class="info_item ml40"><span>收货信息</span><span><p id="StaticAddress">output</p></span></span>
+            <div class="info_item ml40"><span>收货信息</span><span id="StaticAddress">output</span></span>
             </div>
 
         </div>
@@ -68,7 +68,7 @@
                                 <label for="nickName" class="control-label">昵称:</label>
                                 <input type="hidden" id="userId">
                                 <input type="text" class="form-control" id="nickName" name="nickName"
-                                       placeholder="请输入昵称"
+                                       placeholder="请输入个性签名"
                                        required="true">
 <!--                                <input type="hidden" id="userId" th:value="${session.userId}">-->
 <!--                                <input type="text" class="form-control" id="nickName" name="nickName"-->
@@ -78,13 +78,13 @@
                             <div class="form-group">
                                 <label for="introduceSign" class="control-label">个性签名:</label>
                                 <input type="text" class="form-control" id="introduceSign" name="introduceSign"
-                                       placeholder="请输入个性签名" th:value="${session.introduceSign}"
+                                       placeholder="请输入个性签名"
                                        required="true">
                             </div>
                             <div class="form-group">
                                 <label for="address" class="control-label">收货信息:</label>
                                 <input type="text" class="form-control" id="address" name="address"
-                                       placeholder="请输入收货信息" th:value="${session.address}"
+                                       placeholder="请输入收货信息"
                                        required="true">
                             </div>
                         </form>
@@ -113,15 +113,31 @@
         console.log(sessionStorage.getItem("loginName"))
         document.getElementById("StaticNickName").innerText = sessionStorage.getItem("nickName")
         document.getElementById("StaticLoginName").innerText = sessionStorage.getItem("loginName")
-        document.getElementById("StaticIntroduceSign").innerText =sessionStorage.getItem("introduceSign")
-        document.getElementById("StaticAddress").innerText =sessionStorage.getItem("address")
-        // document.getElementById("userId").innerText = sessionStorage.getItem("userId")
-        // document.getElementById("nickName").innerText = sessionStorage.getItem("nickName")
-        // document.getElementById("introduceSign").innerText =sessionStorage.getItem("introduceSign")
-        // document.getElementById("address").innerText =sessionStorage.getItem("address")
+        var y = sessionStorage.getItem("introduceSign")
+        document.getElementById("StaticIntroduceSign").innerText =y==''?"无":y;
+        var x = sessionStorage.getItem("address")
+        document.getElementById("StaticAddress").innerText = x==''?"无":x;
+        document.getElementById("userId").innerText = sessionStorage.getItem("userId")
+        //document.getElementById("nickName").innerText = sessionStorage.getItem("nickName")
+        document.getElementById("introduceSign").innerText =y==''?"无":y;
+        //document.getElementById("nickName").innerText =sessionStorage.getItem("nickName")
+    }
+    function id(x){
+        if (typeof x == "string") return document.getElementById(x);
+        return x;
     }
     function openUpdateModal() {
         $('#personalInfoModal').modal('show');
+    }
+    function getValue(){
+        var x = sessionStorage.getItem("nickName")
+        var y = sessionStorage.getItem("address")
+        var z = sessionStorage.getItem("introduceSign")
+        $('#nickName').val(x)
+        $('#address').val(y)
+        $('#introduceSign').val(z)
+
+
     }
 
     //绑定modal上的保存按钮
@@ -150,13 +166,14 @@
             });
             return;
         }
-        var userId = $("#userId").val();
+        var userId = sessionStorage.getItem("userId");
         var data = {
             "userId": userId,
             "address": address,
             "introduceSign": introduceSign,
             "nickName": nickName
         };
+        console.log(data)
         $.ajax({
             type: 'POST',//方法类型
             url: 'http://175.178.153.116:8080/personal/updateInfo',
@@ -165,6 +182,10 @@
             success: function (result) {
                 if (result.resultCode == 200) {
                     $('#personalInfoModal').modal('hide');
+                    $('#nickName').val(nickName)
+                    sessionStorage.setItem("address",address)
+                    sessionStorage.setItem("nickName",nickName)
+                    sessionStorage.setItem("introduceSign",introduceSign)
                     window.location.reload();
                 } else {
                     $('#personalInfoModal').modal('hide');

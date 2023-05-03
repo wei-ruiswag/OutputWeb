@@ -49,14 +49,14 @@
                     <th:block th:text="'¥'+${goodsDetail.originalPrice}"></th:block>
                 </del>
             </div>
-            <div class="choose">
-                <ul>
-                    <li class="list1">
-                        黑色
-                    </li>
-                </ul>
+<!--            <div class="choose">-->
+<!--                <ul>-->
+<!--                    <li class="list1">-->
+<!--                        黑色-->
+<!--                    </li>-->
+<!--                </ul>-->
 
-            </div>
+<!--            </div>-->
 
 <!--            <div class="purchasenum mt25">-->
 <!--                <span>购买数量</span>-->
@@ -77,6 +77,7 @@
 
             <div class="order">
                 <input class="car" type="button" th:onclick="'saveToCart('+${goodsDetail.goodsId}+')'" value="加入购物车"/>
+<!--                <input class="car" type="button" th:onclick="saveToCart()" value="加入购物车"/>-->
                 <input class="buy" type="button" th:onclick="'saveAndGoCart('+${goodsDetail.goodsId}+')'" value="立即选购"/>
             </div>
             <div class="tb-extra ml20" id="J_tbExtra">
@@ -116,15 +117,23 @@
     /**
      * 添加到购物车
      */
-    function saveToCart(id) {
+
+    function saveToCart(goodsId) {
+        var id = sessionStorage.getItem("userId")
+        console.log(id)
         var goodsCount = 1;
+        // var data = {
+        //     "goodsId": id,
+        //     "goodsCount": goodsCount
+        // };
         var data = {
-            "goodsId": id,
+            "userId": id,
+            "goodsId": goodsId,
             "goodsCount": goodsCount
         };
         $.ajax({
             type: 'POST',
-            url: '/shop-cart',
+            url: 'http://175.178.153.116:8080/cart/save',
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function (result) {
@@ -161,15 +170,18 @@
     /**
      * 添加到购物车并跳转至购物车页面
      */
-    function saveAndGoCart(id) {
+    function saveAndGoCart(goodsId) {
+        var id = sessionStorage.getItem("userId")
+        console.log(id)
         var goodsCount = 1;
         var data = {
-            "goodsId": id,
+            "userId": id,
+            "goodsId": goodsId,
             "goodsCount": goodsCount
         };
         $.ajax({
             type: 'POST',
-            url: '/shop-cart',
+            url: 'http://175.178.153.116:8080/cart/save',
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function (result) {
@@ -183,7 +195,7 @@
                         cancelButtonText: '留在当前页'
                     }).then((flag) => {
                             if (flag.value) {
-                                window.location.href = '/shop-cart';
+                                window.location.href = '/cart';
                             }
                         }
                     );

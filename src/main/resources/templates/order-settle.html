@@ -1,20 +1,32 @@
-<!-- Copyright (c) 2019-2020 十三 all rights reserved. -->
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="mall/header::head-fragment('NewBee商城-订单结算','order-detail')">
-</head>
+<!--<head th:replace="mall/header::head-fragment('NewBee商城-订单结算','order-detail')">-->
+<!--</head>-->
 <link th:href="@{/mall/css/bootstrap-modal.css}" rel="stylesheet">
+<link rel="stylesheet" th:href="@{'/mall/styles/order-settle.css'}">
+<link rel="stylesheet" th:href="@{'/mall/styles/order-detail.css'}">
+<link rel="stylesheet" th:href="@{/mall/css/swiper-bundle.min.css}">
+<link rel="stylesheet" th:href="@{/mall/css/iconfont.css}">
+<link rel="stylesheet" th:href="@{/mall/css/common.css}">
+<link rel="stylesheet" th:href="@{/admin/plugins/sweetalert2/sweetalert2.min.css}"/>
 <body>
-<header th:replace="mall/header::header-fragment"></header>
+<!--<header th:replace="mall/header::header-fragment"></header>-->
 <!-- nav -->
-<nav th:replace="mall/header::nav-fragment"></nav>
+<!--<nav th:replace="mall/header::nav-fragment"></nav>-->
+<nav id="nav" th:fragment="nav-fragment">
+    <div class="banner_x center">
+        <a th:href="@{/index}" class="logo"><h1>Output商城</h1></a>
+        <div class="fr">
+        </div>
+    </div>
+</nav>
 
 <!-- personal -->
 <div id="personal">
     <div class="self-info center">
 
         <!-- sidebar -->
-        <div th:replace="mall/personal-sidebar::sidebar-fragment"></div>
+        <div th:replace="personal-sidebar::sidebar-fragment"></div>
 
         <div class="intro fr">
             <div class="uc-box uc-main-box">
@@ -26,7 +38,7 @@
                                 <a onclick="saveOrder()"
                                    class="btn btn-small btn-primary" title="提交订单"
                                    style="background:#252020; border-color:#252020;">提交订单</a>
-<!--                                <a id="saveOrder" class="btn btn-small btn-primary" title="提交订单">提交订单</a>-->
+                                <!--                                <a id="saveOrder" class="btn btn-small btn-primary" title="提交订单">提交订单</a>-->
                             </div>
                         </div>
                     </div>
@@ -96,8 +108,8 @@
                                     <tr>
                                         <th>收货地址：</th>
                                         <td class="user_address_label"
-                                            th:text="${session.newBeeMallUser.address==''?'无':session.newBeeMallUser.address}">
-                                            newbee
+                                            id="StaticAddress">
+                                            Output
                                         </td>
                                     </tr>
                                     </tbody>
@@ -156,10 +168,10 @@
                     <div class="modal-body">
                         <form id="personalInfoForm">
                             <div class="form-group">
-                                <input type="hidden" id="userId" th:value="${session.newBeeMallUser.userId}">
+                                <input type="hidden" id="userId">
                                 <label for="address" class="control-label">收货地址:</label>
                                 <input type="text" class="form-control" id="address" name="address"
-                                       placeholder="请输入收货地址" th:value="${session.newBeeMallUser.address}"
+                                       placeholder="请输入收货地址"
                                        required="true">
                             </div>
                         </form>
@@ -177,7 +189,7 @@
 </div>
 
 
-<div th:replace="mall/footer::footer-fragment"></div>
+<!--<div th:replace="mall/footer::footer-fragment"></div>-->
 
 <!-- jQuery -->
 <script th:src="@{/admin/plugins/jquery/jquery.min.js}"></script>
@@ -185,6 +197,12 @@
 <script th:src="@{/admin/plugins/sweetalert2/sweetalert2.all.min.js}"></script>
 <script th:src="@{/mall/js/bootstrap3.js}"></script>
 <script type="text/javascript">
+    window.onload = function (){
+        document.getElementById("userId").innerText = sessionStorage.getItem("userId")
+        var x = sessionStorage.getItem("address")
+        document.getElementById("StaticAddress").innerText = x==''?"无":x;
+        document.getElementById("address").innerText = x==''?"无":x;
+    }
     // $('#saveOrder').click(function () {
     //     var userAddress = $(".user_address_label").html();
     //     if (userAddress == '' || userAddress == '无') {
@@ -204,7 +222,11 @@
     //     window.location.href = '../saveOrder';
     // });
     function saveOrder(){
+        //var userId=$("#userId").val();
+        var userId=sessionStorage.getItem("userId")
         var userAddress = $(".user_address_label").html();
+        console.log(userId)
+        console.log(userAddress)
         if (userAddress == '' || userAddress == '无') {
             Swal.fire({
                 text: "请填写收货信息",
@@ -219,7 +241,40 @@
             });
             return;
         }
-        window.location.href = '../saveOrder';
+        var data={
+            "userId": 1,
+            "address": "asdfgjhhhjhjhjgj"
+
+        }
+        // data= encodeURI(encodeURI(data));
+        console.log(data)
+        // window.location.href = '../saveOrder';
+        $.ajax({
+            type: 'POST',//方法类型
+            url: 'http://175.178.153.116:8080/saveCartOrder',
+            // dataType: "json",
+            contentType: 'application/json',
+            data:JSON.stringify(data),
+            success: function (result) {
+                if (result.resultCode == 200) {
+                    console.log(result)
+                    // window.location.reload();
+                    window.location.href = '/ordersList/'+result.message;
+                } else {
+                    console.log(result)
+                    Swal.fire({
+                        text: "操作失败",
+                        icon: "error",iconColor:"#f05b72",
+                    });
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    text: "操作失败",
+                    icon: "error",iconColor:"#f05b72",
+                });
+            }
+        })
 
     }
 
@@ -237,7 +292,7 @@
         };
         $.ajax({
             type: 'POST',//方法类型
-            url: '/personal/updateInfo',
+            url: 'http://175.178.153.116:8080/personal/updateInfo',
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function (result) {
