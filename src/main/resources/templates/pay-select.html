@@ -1,8 +1,15 @@
 <!-- Copyright (c) 2019-2020 十三 all rights reserved. -->
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="mall/header::head-fragment('NewBee商城-选择支付方式','pay-select')">
-</head>
+<!--<head th:replace="mall/header::head-fragment('NewBee商城-选择支付方式','pay-select')">-->
+<!--</head>-->
+<link th:href="@{/mall/css/bootstrap-modal.css}" rel="stylesheet">
+<!--<link rel="stylesheet" th:href="@{'/mall/styles/header.css'}">-->
+<link rel="stylesheet" th:href="@{'/mall/styles/pay-select.css'}">
+<link rel="stylesheet" th:href="@{/mall/css/swiper-bundle.min.css}">
+<link rel="stylesheet" th:href="@{/mall/css/iconfont.css}">
+<link rel="stylesheet" th:href="@{/mall/css/common.css}">
+<link rel="stylesheet" th:href="@{/admin/plugins/sweetalert2/sweetalert2.min.css}"/>
 <body>
 <div class="page-main">
     <div class="container confirm-box">
@@ -151,7 +158,7 @@
     </div>
 </div>
 
-<div th:replace="mall/footer::footer-fragment"></div>
+<!--<div th:replace="mall/footer::footer-fragment"></div>-->
 
 <!-- jQuery -->
 <script th:src="@{/admin/plugins/jquery/jquery.min.js}"></script>
@@ -163,7 +170,8 @@
 
     function payOrder(payType) {
         var orderNo = $("#orderNoValue").val();
-        window.location.href = '/payPage?orderNo=' + orderNo + "&payType=" + payType;
+        var userId=sessionStorage.getItem("userId")
+        window.location.href = '/payPage?orderNo=' + orderNo + "&payType=" + payType+"&userId="+userId;
     }
 </script>
 </body>

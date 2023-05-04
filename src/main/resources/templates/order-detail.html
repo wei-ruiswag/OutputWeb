@@ -2,19 +2,32 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <!--<head th:replace="mall/header::head-fragment('NewBee商城-订单详情','order-detail')">-->
-</head>
+<!--</head>-->
+<link th:href="@{/mall/css/bootstrap-modal.css}" rel="stylesheet">
+<link rel="stylesheet" th:href="@{'/mall/styles/my-orders.css'}">
+<link rel="stylesheet" th:href="@{'/mall/styles/order-detail.css'}">
+<link rel="stylesheet" th:href="@{/mall/css/swiper-bundle.min.css}">
+<link rel="stylesheet" th:href="@{/mall/css/iconfont.css}">
+<link rel="stylesheet" th:href="@{/mall/css/common.css}">
 <link rel="stylesheet" th:href="@{/admin/plugins/sweetalert2/sweetalert2.min.css}"/>
 <body>
 <!--<header th:replace="mall/header::header-fragment"></header>-->
 <!-- nav -->
-<nav th:replace="mall/header::nav-fragment"></nav>
+<!--<nav th:replace="mall/header::nav-fragment"></nav>-->
+<nav id="nav" th:fragment="nav-fragment">
+    <div class="banner_x center">
+        <a th:href="@{/index}" class="logo"><h1>Output商城</h1></a>
+        <div class="fr">
+        </div>
+    </div>
+</nav>
 
 <!-- personal -->
 <div id="personal">
     <div class="self-info center">
 
         <!-- sidebar -->
-        <div th:replace="mall/personal-sidebar::sidebar-fragment"></div>
+        <div th:replace="personal-sidebar::sidebar-fragment"></div>
 
         <div class="intro fr">
             <div class="uc-box uc-main-box">
@@ -133,7 +146,7 @@
                                 </div>
                                 <table class="order-items-table">
                                     <tbody>
-                                    <th:block th:each="item : ${orderDetailVO.newBeeMallOrderItemVOS}">
+                                    <th:block th:each="item : ${orderDetailVO.orderItemVOS}">
                                         <tr>
                                             <td class="col col-thumb">
                                                 <div class="figure figure-thumb">
@@ -164,7 +177,7 @@
                                 <table class="info-table">
                                     <tbody>
                                     <tr>
-                                        <td th:text="${orderDetailVO.userAddress}">newbee</td>
+                                        <td th:text="${orderDetailVO.userAddress}">Output</td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -211,7 +224,7 @@
     </div>
 </div>
 
-<div th:replace="mall/footer::footer-fragment"></div>
+<!--<div th:replace="mall/footer::footer-fragment"></div>-->
 <!-- jQuery -->
 <script th:src="@{/admin/plugins/jquery/jquery.min.js}"></script>
 <script th:src="@{/admin/plugins/sweetalert2/sweetalert2.all.min.js}"></script>
@@ -219,6 +232,8 @@
 
     function cancelOrder() {
         var orderNo = $("#orderNoValue").val();
+        var userId = sessionStorage.getItem("userId")
+        var data = userId
         Swal.fire({
             title: "客官请注意",
             text: "确认要取消订单吗?",
@@ -230,9 +245,11 @@
                 if (flag.value) {
                     $.ajax({
                         type: 'PUT',
-                        url: '/orders/' + orderNo + '/cancel',
+                        url: 'http://175.178.153.116:8080/orders/' + orderNo + '/cancel?userId='+userId,
+                        // data: JSON.stringify(data),
                         success: function (result) {
                             if (result.resultCode == 200) {
+                                // window.location.href = '/orders/'+orderNo+'?userId='+userId;
                                 window.location.reload();
                             } else {
                                 Swal.fire({
@@ -256,16 +273,19 @@
 
     function payOrder() {
         var orderNo = $("#orderNoValue").val();
-        window.location.href = '/selectPayType?orderNo=' + orderNo;
+        var userId= sessionStorage.getItem("userId")
+        window.location.href = '/selectPayType?orderNo=' + orderNo+'&userId=1';
     }
 
     function finishOrder() {
         var orderNo = $("#orderNoValue").val();
+        var userId = sessionStorage.getItem("userId")
         $.ajax({
             type: 'PUT',
-            url: '/orders/' + orderNo + '/finish',
+            url: 'http://175.178.153.116:8080/orders/' + orderNo + '/finish?userId='+userId,
             success: function (result) {
                 if (result.resultCode == 200) {
+                    // window.location.href = '/orders/'+orderNo+'?userId='+userId;
                     window.location.reload();
                 } else {
                     Swal.fire({

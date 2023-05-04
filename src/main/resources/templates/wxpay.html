@@ -15,7 +15,7 @@
     <meta http-equiv="Cache" content="no-cache">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <title>newbee-mall 支付</title>
+    <title>Output 支付</title>
     <link th:href="@{/mall/styles/pay.css}" rel="stylesheet" media="screen">
     <script type="text/javascript" src="https://cdn.staticfile.org/jquery/1.11.1/jquery.min.js"></script>
 </head>
@@ -75,12 +75,13 @@
 <script type="text/javascript">
     function payOrderSuccess() {
         var orderNo = $("#orderNoValue").val();
+        var userId=sessionStorage.getItem("userId")
         $.ajax({
             type: 'GET',
-            url: '/paySuccess?payType=2&orderNo=' + orderNo,
+            url: 'http://175.178.153.116:8080/paySuccess?payType=2&orderNo=' + orderNo+"&userId="+userId,
             success: function (result) {
                 if (result.resultCode == 200) {
-                    window.location.href = '/orders/' + orderNo;
+                    window.location.href = '/orders/' + orderNo+'&userId='+userId;
                 } else {
                     alert(result.message);
                 }

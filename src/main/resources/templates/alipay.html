@@ -79,10 +79,10 @@
         var orderNo = $("#orderNoValue").val();
         $.ajax({
             type: 'GET',
-            url: '/paySuccess?payType=1&orderNo=' + orderNo,
+            url: 'http://175.178.153.116:8080/paySuccess?payType=1&orderNo=' + orderNo,
             success: function (result) {
                 if (result.resultCode == 200) {
-                    window.location.href = '/orders/' + orderNo;
+                    window.location.href = '/orders/' + orderNo+'&userId='+userId;
                 } else {
                     alert(result.message);
                 }
