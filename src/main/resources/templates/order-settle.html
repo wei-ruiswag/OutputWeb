@@ -200,6 +200,7 @@
     window.onload = function (){
         document.getElementById("userId").innerText = sessionStorage.getItem("userId")
         var x = sessionStorage.getItem("address")
+        console.log(x)
         document.getElementById("StaticAddress").innerText = x==''?"无":x;
         document.getElementById("address").innerText = x==''?"无":x;
     }
@@ -259,7 +260,8 @@
                 if (result.resultCode == 200) {
                     console.log(result)
                     // window.location.reload();
-                    window.location.href = '/ordersList/'+result.message;
+
+                    window.location.href = '/orders/'+result.message+'?userId='+userId;
                 } else {
                     console.log(result)
                     Swal.fire({
@@ -285,7 +287,9 @@
     //绑定modal上的保存按钮
     $('#saveButton').click(function () {
         var address = $("#address").val();
-        var userId = $("#userId").val();
+        // var userId = $("#userId").val();
+        var userId = sessionStorage.getItem("userId")
+        console.log(userId)
         var data = {
             "userId": userId,
             "address": address
@@ -298,6 +302,7 @@
             success: function (result) {
                 if (result.resultCode == 200) {
                     $('#personalInfoModal').modal('hide');
+                    sessionStorage.setItem("address",address)
                     window.location.reload();
                 } else {
                     $('#personalInfoModal').modal('hide');

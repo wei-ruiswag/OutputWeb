@@ -181,7 +181,8 @@
      * 跳转至结算页面
      */
     function settle() {
-        window.location.href = '/cart/settle'
+        var userId = sessionStorage.getItem("userId")
+        window.location.href = '/cart/settle?userId='+userId
     }
 
     /**

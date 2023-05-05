@@ -81,7 +81,7 @@
             url: 'http://175.178.153.116:8080/paySuccess?payType=2&orderNo=' + orderNo+"&userId="+userId,
             success: function (result) {
                 if (result.resultCode == 200) {
-                    window.location.href = '/orders/' + orderNo+'&userId='+userId;
+                    window.location.href = '/orders/' + orderNo+'?userId='+userId;
                 } else {
                     alert(result.message);
                 }

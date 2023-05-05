@@ -59,9 +59,10 @@ public class ShoppingCartController {
 
     @GetMapping("/cart/settle")
     public String settlePage(HttpServletRequest request,
-                             HttpSession httpSession) throws java.lang.Exception {
+                             HttpSession httpSession,@RequestParam("userId") Long userId) throws java.lang.Exception {
         HttpRequest handle = new HttpRequest();
-        Result res  = JSON.parseObject(handle.get("http://175.178.153.116:8080/cart?userId=1"), Result.class);
+        Result res  = JSON.parseObject(handle.get("http://175.178.153.116:8080/cart?userId="+userId), Result.class);
+        System.out.println(userId);
         List<ShoppingCartItemVO> myShoppingCartItems = JSONArray.parseArray(JSON.toJSONString(res.getData()),ShoppingCartItemVO.class);
 
         int priceTotal=0;

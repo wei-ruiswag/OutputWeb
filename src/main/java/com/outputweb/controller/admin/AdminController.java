@@ -1,25 +1,25 @@
 
 package com.outputweb.controller.admin;
 
-import cn.hutool.captcha.ShearCaptcha;
+
 
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
+
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+
 
 
 @Controller
+@RequestMapping("/admin")
 public class AdminController {
 
 
-    @GetMapping({"/test"})
-    public String test() {
-        return "admin/test";
-    }
+//    @GetMapping({"/test"})
+//    public String test() {
+//        return "admin/test";
+//    }
 
 
     @GetMapping({"", "/", "/index", "/index.html"})
@@ -29,14 +29,14 @@ public class AdminController {
     }
 
 
-    @GetMapping("/profile")
-    public String profile(HttpServletRequest request) {
-
-        request.setAttribute("path", "profile");
-//        request.setAttribute("loginUserName", adminUser.getLoginUserName());
-//        request.setAttribute("nickName", adminUser.getNickName());
-        return "admin/profile";
-    }
+//    @GetMapping("/profile")
+//    public String profile(HttpServletRequest request) {
+//
+//        request.setAttribute("path", "profile");
+////        request.setAttribute("loginUserName", adminUser.getLoginUserName());
+////        request.setAttribute("nickName", adminUser.getNickName());
+//        return "admin/profile";
+//    }
 
 
 //    @GetMapping("/logout")

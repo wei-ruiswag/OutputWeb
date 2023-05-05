@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<header th:replace="admin/header::header-fragment"></header>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+    <!-- 引入页面头header-fragment -->
+    <div th:replace="admin/header::header-nav"></div>
+    <!-- 引入工具栏sidebar-fragment -->
+    <div th:replace="admin/sidebar::sidebar-fragment(${path})"></div>
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- Main content -->
+        <div class="content">
+            <div class="container-fluid">
+                <div class="card card-primary card-outline">
+                    <div class="card-header">
+                        <h3 class="card-title">动态信息编辑</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="goodsForm" onsubmit="return false;">
+
+                            <div class="form-group" style="display:flex;">
+                                <input type="hidden" id="newsId" name="newsId"
+                                       th:value="${newds!=null and news.newsId!=null }?${news.goodsId}: 0">
+                                <input type="text" class="form-control col-sm-6" id="newsTitle" name="newsTitle"
+                                       placeholder="*请输入动态标题(必填)"
+                                       th:value="${news!=null and news.newsTitle!=null }?${news.newsTitle}: ''"
+                                       required="true">
+
+                                <input type="text" class="form-control col-sm-6" id="tag" name="tag"
+                                       placeholder="*请输入动态小标签"
+                                       th:value="${news!=null and news.tag!=null }?${news.tag}: ''"
+                                       required="true">
+                            </div>
+
+<!--                            <div class="form-group">-->
+<!--                                <label class="control-label">发布状态:&nbsp;</label>-->
+<!--                                <input name="goodsSellStatus" type="radio" id="goodsSellStatusTrue" checked=true-->
+<!--                                       th:checked="${null==news||(null !=news and null !=news.newsSellStatus and news.newsSellStatus==0)} ?true:false"-->
+<!--                                       value="0"/>&nbsp;发布-->
+<!--                                <input name="goodsSellStatus" type="radio" id="goodsSellStatusFalse" value="1"-->
+<!--                                       th:checked="${null !=goods and null !=goods.goodsSellStatus and goods.goodsSellStatus==1} ?true:false"/>&nbsp;下架&nbsp;-->
+<!--                            </div>-->
+                            <div class="form-group">
+                                <div class="form-group">
+                                    <div class="col-sm-4">
+                                        <th:block th:if="${null == news}">
+                                            <img id="newsCoverImg" src="/admin/dist/img/img-upload.png"
+                                                 style="height: 64px;width: 64px;">
+                                        </th:block>
+                                        <th:block th:unless="${null == news}">
+                                            <img id="newsCoverImg" th:src="${news.newsCoverImg}"
+                                                 style="width:160px ;height: 160px;display:block;">
+                                        </th:block>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="form-group">
+                                    <div class="col-sm-4">
+                                        <button class="btn btn-info" style="margin-bottom: 5px;"
+                                                id="uploadNewsCoverImg">
+                                            <i class="fa fa-picture-o"></i>&nbsp;上传动态主图
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" style="border: 1px solid #ccc;">
+                                <div id="editor-toolbar" class="editor-toolbar" style="border-bottom: 1px solid #ccc;"></div>
+                                <input type="hidden" class="editor-text" th:value="${news!=null and news.newsContent !=null}?${news.newsContent}: ''">
+                                <div id="editor-text-area" class="editor-text-area" style="height: 750px"></div>
+                            </div>
+                            <div class="form-group">
+                                <!-- 按钮 -->
+                                &nbsp;<button class="btn btn-info float-right" style="margin-left: 5px;"
+                                              id="saveButton">保存并发布动态
+                            </button>&nbsp;
+                                &nbsp;<button class="btn btn-secondary float-right" style="margin-left: 5px;"
+                                              id="cancelButton">返回动态列表
+                            </button>&nbsp;
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div><!-- /.container-fluid -->
+        </div>
+    </div>
+    <!-- /.content-wrapper -->
+    <!-- 引入页脚footer-fragment -->
+    <div th:replace="admin/footer::footer-fragment"></div>
+</div>
+<!-- jQuery -->
+<script th:src="@{/admin/plugins/jquery/jquery.min.js}"></script>
+<!-- Bootstrap 4 -->
+<script th:src="@{/admin/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<!-- AdminLTE App -->
+<script th:src="@{/admin/dist/js/adminlte.min.js}"></script>
+<!-- sweetalert -->
+<script th:src="@{/admin/plugins/sweetalert2/sweetalert2.all.min.js}"></script>
+<!-- ajaxupload -->
+<script th:src="@{/admin/plugins/ajaxupload/ajaxupload.js}"></script>
+<!-- wangEditor -->
+<script th:src="@{/admin/plugins/wangeditor-5.1.23/index.js}"></script>
+<script th:src="@{/admin/dist/js/public.js}"></script>
+<!--<script th:src="@{/admin/dist/js/newbee_mall_goods_edit.js}"></script>-->
+<script type="text/javascript">
+    var editor;
+
+    $(function () {
+
+        //富文本编辑器 用于动态详情编辑
+        const E = window.wangEditor;
+
+        const editorConfig = { MENU_CONF: {} }
+        editorConfig.MENU_CONF['uploadImage'] = {
+            //配置服务端图片上传地址
+            server: '/admin/upload/files',
+            // 超时时间5s
+            timeout: 5 * 1000,
+            fieldName: 'files',
+            // 选择文件时的类型限制，默认为 ['image/*']
+            allowedFileTypes: ['image/*'],
+            // 限制图片大小 4M
+            maxFileSize: 4 * 1024 * 1024,
+            base64LimitSize: 5 * 1024,
+
+            onBeforeUpload(file) {
+                console.log('onBeforeUpload', file)
+
+                return file // will upload this file
+                // return false // prevent upload
+            },
+            onProgress(progress) {
+                console.log('onProgress', progress)
+            },
+            onSuccess(file, res) {
+                console.log('onSuccess', file, res)
+            },
+            onFailed(file, res) {
+                alert(res.message)
+                console.log('onFailed', file, res)
+            },
+            onError(file, err, res) {
+                alert(err.message)
+                console.error('onError', file, err, res)
+            },
+            customInsert: function (result,insertImgFn) {
+                if (result != null && result.resultCode == 200) {
+                    // insertImgFn 可把图片插入到编辑器，传入图片 src ，执行函数即可
+                    result.data.forEach(img => {
+                        insertImgFn(img)
+                    });
+                } else if (result != null && result.resultCode != 200) {
+                    Swal.fire({
+                        text: result.message,
+                        icon: "error",iconColor:"#f05b72",
+                    });
+                } else {
+                    Swal.fire({
+                        text: "error",
+                        icon: "error",iconColor:"#f05b72",
+                    });
+                }
+            }
+        }
+
+        editor = E.createEditor({
+            selector: '#editor-text-area',
+            html: $(".editor-text").val(),
+            config: editorConfig
+        })
+
+        const toolbar = E.createToolbar({
+            editor,
+            selector: '#editor-toolbar',
+        })
+
+        //图片上传插件初始化 用于动态预览图上传
+        new AjaxUpload('#uploadNewsCoverImg', {
+            action: 'http://175.178.153.116:8080/admin/upload/file',
+            name: 'file',
+            autoSubmit: true,
+            responseType: "json",
+            onSubmit: function (file, extension) {
+                if (!(extension && /^(jpg|jpeg|png|gif)$/.test(extension.toLowerCase()))) {
+                    Swal.fire({
+                        text: "只支持jpg、png、gif格式的文件！",
+                        icon: "error",iconColor:"#f05b72",
+                    });
+                    return false;
+                }
+            },
+            onComplete: function (file, r) {
+                if (r != null && r.resultCode == 200) {
+                    $("#newsCoverImg").attr("src", r.data);
+                    $("#newsCoverImg").attr("style", "width: 128px;height: 128px;display:block;");
+                    return false;
+                } else if (r != null && r.resultCode != 200) {
+                    Swal.fire({
+                        text: r.message,
+                        icon: "error",iconColor:"#f05b72",
+                    });
+                    return false;
+                }
+                else {
+                    Swal.fire({
+                        text: "error",
+                        icon: "error",iconColor:"#f05b72",
+                    });
+                }
+            }
+        });
+    });
+
+    $('#saveButton').click(function () {
+        var newsId = $('#newsId').val();
+        var newsTitle = $('#newsTitle').val();
+        var tag = $('#tag').val();
+        var newsContent = editor.getHtml();
+        var newsCoverImg = $('#newsCoverImg')[0].src;
+        if (isNull(newsTitle)) {
+            Swal.fire({
+                text: "请输动态标题",
+                icon: "error",iconColor:"#f05b72",
+            });
+            return;
+        }
+        if (!validLength(newsTitle, 100)) {
+            Swal.fire({
+                text: "动态标题过长",
+                icon: "error",iconColor:"#f05b72",
+            });
+            return;
+        }
+
+        if (isNull(newsContent)) {
+            Swal.fire({
+                text: "请输入动态内容",
+                icon: "error",iconColor:"#f05b72",
+            });
+            return;
+        }
+        if (!validLength(newsContent, 50000)) {
+            Swal.fire({
+                text: "动态内容过长",
+                icon: "error",iconColor:"#f05b72",
+            });
+            return;
+        }
+        // if (isNull(newsCoverImg) || newsCoverImg.indexOf('img-upload') != -1) {
+        //     Swal.fire({
+        //         text: "封面图片不能为空",
+        //         icon: "error",iconColor:"#f05b72",
+        //     });
+        //     return;
+        // }
+        var url = 'http://175.178.153.116:8080/admin/news/save';
+        var swlMessage = '发布成功';
+        var data = {
+            "newsTitle": newsTitle,
+            "tag": tag,
+            "newsContent": newsContent,
+            "newsCoverImg": newsCoverImg,
+
+
+        };
+        if (newsId > 0) {
+            url = 'http://175.178.153.116:8080/admin/news/update';
+            swlMessage = '修改成功';
+            data = {
+                "newsTitle": newsTitle,
+                "tag": tag,
+                "newsContent": newsContent,
+                "newsCoverImg": newsCoverImg,
+            };
+        }
+        console.log(data);
+        $.ajax({
+            type: 'POST',//方法类型
+            url: url,
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (result) {
+                if (result.resultCode == 200) {
+                    Swal.fire({
+                        text: swlMessage,
+                        icon: "success",iconColor:"#1d953f",
+                        showCancelButton: false,
+                        confirmButtonColor: '#1baeae',
+                        confirmButtonText: '返回动态列表',
+                        confirmButtonClass: 'btn btn-success',
+                        buttonsStyling: false
+                    }).then(function () {
+                        window.location.href = "/admin/news";
+                    })
+                } else {
+                    Swal.fire({
+                        text: result.message,
+                        icon: "error",iconColor:"#f05b72",
+                    });
+                }
+                ;
+            },
+            error: function () {
+                Swal.fire({
+                    text: "操作失败",
+                    icon: "error",iconColor:"#f05b72",
+                });
+            }
+        });
+    });
+
+    $('#cancelButton').click(function () {
+        window.location.href = "/admin/news";
+    });
+
+
+
+</script>
+</body>
+</html>

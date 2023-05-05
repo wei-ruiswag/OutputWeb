@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<header th:replace="admin/header::header-fragment">
+</header>
+<style>
+    .ui-jqgrid tr.jqgrow td {
+        white-space: normal !important;
+        height: auto;
+        vertical-align: text-top;
+        padding-top: 2px;
+    }
+    a {
+        color: #1baeae;
+        text-decoration: none;
+        background-color: transparent;
+        -webkit-text-decoration-skip: objects;
+    }
+
+    a:hover {
+        color: white;
+        background-color: #1baeae;
+    }
+</style>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+    <!-- 引入页面头header-fragment -->
+    <div th:replace="admin/header::header-nav"></div>
+    <!-- 引入工具栏sidebar-fragment -->
+    <div th:replace="admin/sidebar::sidebar-fragment(${path})"></div>
+    <!-- Content Wrapper. Contains 图标content -->
+    <div class="content-wrapper">
+        <!-- Content Header (图标header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- Main content -->
+        <div class="content">
+            <div class="container-fluid">
+                <div class="card card-primary card-outline">
+                    <div class="card-header">
+                        <h3 class="card-title">动态管理</h3>
+                    </div> <!-- /.card-body -->
+                    <div class="card-body">
+
+                        <div class="grid-btn">
+                            <button class="btn btn-info" onclick="addNews()"><i
+                                    class="fa fa-plus"></i>&nbsp;添加动态
+                            </button>
+                            <button class="btn btn-info" onclick="editNews()"><i
+                                    class="fa fa-pencil-square-o"></i>&nbsp;修改动态
+                            </button>
+<!--                            <button class="btn btn-success" onclick="putUpGoods()"><i-->
+<!--                                    class="fa fa-arrow-up"></i>&nbsp;发布动态-->
+<!--                            </button>-->
+                            <button class="btn btn-danger" onclick="putDownNews()"><i
+                                    class="fa fa-arrow-down"></i>&nbsp;删除动态
+                            </button>
+                        </div>
+                        <br>
+                        <table id="jqGrid" class="table table-bordered">
+                        </table>
+                        <div id="jqGridPager"></div>
+                    </div><!-- /.card-body -->
+                </div>
+            </div><!-- /.container-fluid -->
+        </div>
+
+    </div>
+    <!-- 引入页脚footer-fragment -->
+    <div th:replace="admin/footer::footer-fragment"></div>
+</div>
+<!-- jQuery -->
+<script th:src="@{/admin/plugins/jquery/jquery.min.js}"></script>
+<!-- Bootstrap 4 -->
+<script th:src="@{/admin/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<!-- AdminLTE App -->
+<script th:src="@{/admin/dist/js/adminlte.min.js}"></script>
+<!-- jqgrid -->
+<script th:src="@{/admin/plugins/jqgrid-5.7.0/jquery.jqGrid.min.js}"></script>
+<script th:src="@{/admin/plugins/jqgrid-5.7.0/grid.locale-cn.js}"></script>
+
+<!-- sweetalert -->
+<script th:src="@{/admin/plugins/sweetalert2/sweetalert2.all.min.js}"></script>
+<script th:src="@{/admin/dist/js/public.js}"></script>
+<script type="text/javascript">
+    $(function () {
+        $("#jqGrid").jqGrid({
+            url: 'http://175.178.153.116:8080/news/list',
+            datatype: "json",
+            colModel: [
+                {label: '动态编号', name: 'newsId', index: 'newsId', width: 60, key: true},
+                {label: '动态标题', name: 'newsTitle', index: 'newsTitle', width: 120},
+                {label: '动态图片', name: 'newsCoverImg', index: 'newsCoverImg', width: 120, formatter: coverImageFormatter},
+
+                // {
+                //     label: '发布状态',
+                //     name: 'goodsSellStatus',
+                //     index: 'goodsSellStatus',
+                //     width: 80,
+                //     formatter: goodsSellStatusFormatter
+                // },
+                {label: '创建时间', name: 'createTime', index: 'createTime', width: 60}
+            ],
+            height: 760,
+            rowNum: 20,
+            rowList: [20, 50, 80],
+            styleUI: 'Bootstrap',
+            loadtext: '信息读取中...',
+            rownumbers: false,
+            rownumWidth: 20,
+            autowidth: true,
+            multiselect: true,
+            pager: "#jqGridPager",
+            jsonReader: {
+                root: "data.list",
+                page: "data.currPage",
+                total: "data.totalPage",
+                records: "data.totalCount"
+            },
+            prmNames: {
+                page: "page",
+                rows: "limit",
+                order: "order",
+            },
+            gridComplete: function () {
+                //隐藏grid底部滚动条
+                $("#jqGrid").closest(".ui-jqgrid-bdiv").css({"overflow-x": "hidden"});
+            }
+        });
+
+        $(window).resize(function () {
+            $("#jqGrid").setGridWidth($(".card-body").width());
+        });
+
+        // function goodsSellStatusFormatter(cellvalue) {
+        //     //商品上架状态 0-上架 1-下架
+        //     if (cellvalue == 0) {
+        //         return "<button type=\"button\" class=\"btn btn-block btn-success btn-sm\" style=\"width: 80%;\">销售中</button>";
+        //     }
+        //     if (cellvalue == 1) {
+        //         return "<button type=\"button\" class=\"btn btn-block btn-secondary btn-sm\" style=\"width: 80%;\">已下架</button>";
+        //     }
+        // }
+
+        function coverImageFormatter(cellvalue) {
+            return "<img src='" + cellvalue + "' height=\"80\" width=\"80\" alt='商品主图'/>";
+        }
+
+    });
+
+    /**
+     * jqGrid重新加载
+     */
+    function reload() {
+        initFlatPickr();
+        var page = $("#jqGrid").jqGrid('getGridParam', 'page');
+        $("#jqGrid").jqGrid('setGridParam', {
+            page: page
+        }).trigger("reloadGrid");
+    }
+
+    /**
+     * 添加动态
+     */
+    function addNews() {
+        window.location.href = "/admin/news/edit";
+    }
+
+    /**
+     * 修改动态
+     */
+    function editNews() {
+        var id = getSelectedRow();
+        if (id == null) {
+            return;
+        }
+        window.location.href = "/admin/news/edit/" + id;
+    }
+
+    // /**
+    //  * 发布
+    //  */
+    // function putUpGoods() {
+    //     var ids = getSelectedRows();
+    //     if (ids == null) {
+    //         return;
+    //     }
+    //     Swal.fire({
+    //         title: "确认弹框",
+    //         text: "确认要执行操作吗?",
+    //         icon: "warning",iconColor:"#dea32c",
+    //         showCancelButton: true,
+    //         confirmButtonText: '确认',
+    //         cancelButtonText: '取消'
+    //     }).then((flag) => {
+    //             if (flag.value) {
+    //                 $.ajax({
+    //                     type: "PUT",
+    //                     url: "/admin/goods/status/0",
+    //                     contentType: "application/json",
+    //                     data: JSON.stringify(ids),
+    //                     success: function (r) {
+    //                         if (r.resultCode == 200) {
+    //                             Swal.fire({
+    //                                 text: "上架成功",
+    //                                 icon: "success",iconColor:"#1d953f",
+    //                             });
+    //                             $("#jqGrid").trigger("reloadGrid");
+    //                         } else {
+    //                             Swal.fire({
+    //                                 text: r.message,
+    //                                 icon: "error",iconColor:"#f05b72",
+    //                             });
+    //                         }
+    //                     }
+    //                 });
+    //             }
+    //         }
+    //     )
+    //     ;
+    // }
+
+    /**
+     * 删除
+     */
+    function putDownNews() {
+        var ids = getSelectedRows();
+        if (ids == null) {
+            return;
+        }
+        Swal.fire({
+            title: "确认弹框",
+            text: "确认要执行删除操作吗?",
+            icon: "warning",iconColor:"#dea32c",
+            showCancelButton: true,
+            confirmButtonText: '确认',
+            cancelButtonText: '取消'
+        }).then((flag) => {
+                if (flag.value) {
+                    $.ajax({
+                        type: "PUT",
+                        url: "http://175.178.153.116:8080/admin/news/delete",
+                        contentType: "application/json",
+                        data: JSON.stringify(ids),
+                        success: function (r) {
+                            if (r.resultCode == 200) {
+                                Swal.fire({
+                                    text: "删除成功",
+                                    icon: "success",iconColor:"#1d953f",
+                                });
+                                $("#jqGrid").trigger("reloadGrid");
+                            } else {
+                                Swal.fire({
+                                    text: r.message,
+                                    icon: "error",iconColor:"#f05b72",
+                                });
+                            }
+                        }
+                    });
+                }
+            }
+        )
+        ;
+    }
+</script>
+</body>
+</html>

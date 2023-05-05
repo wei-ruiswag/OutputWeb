@@ -53,27 +53,6 @@ public class OrderController {
         return "my-orders";
     }
 
-//    @GetMapping("/saveOrder")
-//    public String saveOrder(HttpSession httpSession) throws Exception{
-//
-////        HttpRequest handle = new HttpRequest();
-////        Result res = JSON.parseObject(handle.get("http://175.178.153.116:8080/saveCartOrder"), Result.class);
-////        System.out.print(res.getMessage());
-////        List<ShoppingCartItemVO> myShoppingCartItems = ShoppingCartService.getMyShoppingCartItems(user.getUserId());
-////        if (!StringUtils.hasText(user.getAddress().trim())) {
-////            //无收货地址
-////            NewBeeMallException.fail(ServiceResultEnum.NULL_ADDRESS_ERROR.getResult());
-////        }
-////        if (CollectionUtils.isEmpty(myShoppingCartItems)) {
-////            //购物车中无数据则跳转至错误页
-////            NewBeeMallException.fail(ServiceResultEnum.SHOPPING_ITEM_ERROR.getResult());
-////        }
-////        //保存订单并返回订单号
-////        String saveOrderResult = newBeeMallOrderService.saveOrder(user, myShoppingCartItems);
-//        //跳转到订单详情页
-////        return "redirect:/ordersList/" + saveOrderResult;
-//        return "redirect:/ordersList/";
-//    }
 
     @GetMapping("/selectPayType")
     public String selectPayType(HttpServletRequest request, @RequestParam("orderNo") String orderNo, @RequestParam("userId") Long userId,HttpSession httpSession) throws Exception{
