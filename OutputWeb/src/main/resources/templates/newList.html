@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>商品选择页面</title>
+    <link rel="stylesheet" th:href="@{mall/styles/mall.css}">
+    <link rel="stylesheet" th:href="@{mall/styles/page.css}">
+    <link rel="stylesheet" th:href="@{mall/styles/search.css}">
+    <link rel="Shortcut Icon" href="home/skih/ouput_logo.png" type="image/x-icon" />
+    <link rel="stylesheet" href="css/semantic.min.css" >
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+<body>
+<header th:replace="header::body"></header>
+<div id="newList" class="m-padded-tb-max">
+    <div class="ui container">
+        <div class="ui stackable grid">
+            <!--左边-->
+            <div style="width: 1155px">
+                <div id="products" class="ui attached segment"style="
+    height: 830.13334px;
+">
+
+
+                    <!-- 内容-->
+
+
+                </div>
+
+                <!--分页-->
+                <div class="pages" style="height: 50px;margin-top: 35px;margin-bottom: 20px;text-align: center;">
+                    <div class="page_wrap">
+                        <button class="" style="width: 60px;height: 45px;color: #fff;" id="front" onclick="front()">上一页</button>
+                        <button class="" style="width: 60px;height: 45px;color: #fff;" id="now"></button>
+                        <button class="" style="width: 60px;height: 45px;color: #fff;" id="totalPage"></button>
+                        <button class="" style="width: 60px;height: 45px;color: #fff;" id="next" onclick="next()">下一页</button>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<!--<div id="newList" class="middle">-->
+<!--    <div class="right" id="products">-->
+<!--        <div v-for="item in data.list">-->
+
+<!--        </div>-->
+<!--        {{data}}-->
+<!--    </div>-->
+
+<!--</div>-->
+
+
+
+<footer th:replace="footer::body"></footer>
+
+<!-- jQuery -->
+<script th:src="@{/admin/plugins/jquery/jquery.min.js}"></script>
+<!-- Bootstrap 3 -->
+<script th:src="@{/mall/js/bootstrap3.js}"></script>
+<script th:src="@{/mall/js/search.js}" type="text/javascript"></script>
+<script th:src="@{/admin/plugins/sweetalert2/sweetalert2.all.min.js}"></script>
+
+<script  type="text/javascript">
+    const products = document.querySelectorAll('.product');
+    products.forEach(product => {
+        product.addEventListener('click', () => {
+            window.location.href = product.querySelector('a').href;
+        });
+    });
+
+    const buttons = document.querySelectorAll('button, a');
+    buttons.forEach(button => {
+        button.addEventListener('mouseover', () => {
+            button.classList.add('active');
+        });
+
+        button.addEventListener('mouseout', () => {
+            button.classList.remove('active');
+        });
+    });
+
+
+    document.getElementById("front").onclick=function () {
+        console.log('上一页')
+        let upPage = parseInt($("#now").text()) - 1;
+        let totalPage = parseInt($("#totalPage").text().slice(1, -1));
+        if (upPage < 1) {
+            Swal.fire({
+                text: '已是第一页',
+                icon: "error",iconColor:"#f05b72",
+            });
+            return
+        }
+        let data = {
+            "page": upPage,
+            "limit": 20,
+
+        };
+        findData(data)
+
+    }
+    document.getElementById("next").onclick=function () {
+        console.log('下一页')
+        let nextPage = parseInt($("#now").text()) + 1;
+        let totalPage = parseInt($("#totalPage").text().slice(1, -1));
+        if (nextPage > totalPage) {
+            Swal.fire({
+                text: '已是最后一页',
+                icon: "error",iconColor:"#f05b72",
+            });
+            return
+        }
+        let data = {
+            "page": nextPage,
+            "limit": 20,
+
+        };
+        findData(data)
+
+    }
+
+    findData({"page": 1,
+        "limit": 20,})
+    function findData(data) {
+        $.ajax({
+            type: 'GET',//方法类型
+            url: 'http://175.178.153.116:8080/news/list',
+            // contentType: 'application/json',
+            // data: JSON.stringify(data),
+            data:data,
+            success: function (result) {
+                if (result.resultCode == 200) {
+                    console.log(result);
+                    // var cacHtml = "";
+                    var cacHtml2 = "";
+                    var cacList=result.data.list;
+                    /****forEach循环****/
+                    $("#now").text(result.data.currPage);
+                    $("#totalPage").text('共' + result.data.totalPage + '页');
+                    cacList.forEach(e => {
+                        // cacHtml += `        <div class="product">
+                        //
+                        //                 <a  href="http://175.178.153.116:8080/news/detail/${e.newsId}">
+                        //                 <img scr=${e.newsCoverImg}, alt="${e.newsId}"
+                        //                 <p id=${e.newsId}></p>${e.newsTitle}
+                        //                 </a>
+                        //                 </div>` ;
+
+                        cacHtml2 += `
+                    <div v-for="item in data.list" class="ui m-padded-tb-max vertical segment">
+                        <div class="ui mobile reversed stackable grid">
+
+                            <div class="eleven wide column">
+                                <h3>${e.newsTitle}</h3>
+                                <p>${e.newsContent}</p>
+                                <div class="ui grid">
+                                    <div class="eleven wide column">
+                                        <div class="ui horizontal link list">
+                                            <div class="item">
+<!--                                                <img :src="item.newsCoverImg" alt="" class="ui avatar image">-->
+<!--                                                <div class="content"><a href="#">丁毅</a></div>-->
+                                            </div>
+                                            <div class="item">
+                                                <i class="calendar icon"></i>${e.createTime}
+                                            </div>
+                                            <div class="ui label">
+                                                <i class="circle outline icon"></i> ${e.tag}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="right aligned five wide column" >
+                                        <a href="newDetail?nesid=${e.newsId}" target="_blank" class="ui teal basic label" style="height: 36.13254px;">查看详情</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="five wide column">
+                                <a href="newDetail?nesid=${e.newsId}" target="_blank">
+                                    <img src="${e.newsCoverImg}" alt="" class="ui rounded image image-size">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    `
+                    })
+
+                    document.getElementById('products').innerHTML = cacHtml2;
+
+
+                };
+            },
+            error: function () {
+                Swal.fire({
+                    text: '操作失败',
+                    icon: "error",iconColor:"#f05b72",
+                });
+            }
+        });
+    }
+
+
+
+
+</script>
+<script src="/mall/js/search.js"></script>
+</body>
+</html>

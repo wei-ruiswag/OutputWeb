@@ -1,0 +1,35 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 2524991 */
+  src: url('../fonts/iconfont.woff2') format('woff2'),
+       url('../fonts/iconfont.woff') format('woff'),
+       url('../fonts/iconfont.ttf') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-next:before {
+  content: "\e62e";
+}
+
+.icon-top:before {
+  content: "\e648";
+}
+
+.icon-sina:before {
+  content: "\e612";
+}
+
+.icon-wechat:before {
+  content: "\e759";
+}
+
+.icon-prev:before {
+  content: "\e75a";
+}
+

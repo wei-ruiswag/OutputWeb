@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>商品选择页面</title>
+    <link rel="stylesheet" th:href="@{mall/styles/mall.css}">
+    <link rel="stylesheet" th:href="@{mall/styles/page.css}">
+    <link rel="stylesheet" th:href="@{mall/styles/search.css}">
+
+</head>
+<body>
+<header th:replace="header::body"></header>
+<div class="middle">
+    <div class="left">
+        <h2>筛选</h2>
+        <input type="text" placeholder="关键字搜索" id="searchInput" style="width: 250px;height: 40px" >
+        <button class="" style="width: 60px;height: 45px;" id="searchButton" onclick="search()">搜索</button>
+        <div class="categories">
+            <div class="category">
+                <input type="checkbox" id="category1" onclick="classify()" style="height: 20px;width: 20px">
+                <label for="category1" style="    font-size: 20px;">键盘</label>
+                <div class="subcategory">
+                    <div class="sub-category">
+                        <input type="checkbox" id="subcategory1-1">
+                        <label for="subcategory1-1">键盘一</label>
+                    </div>
+                    <div class="sub-category">
+                        <input type="checkbox" id="subcategory1-2">
+                        <label for="subcategory1-2">键盘二</label>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+    <div class="right" id="products">
+    </div>
+
+</div>
+
+<div class="pages" style="height: 50px;margin-top: 35px;margin-bottom: 20px;">
+    <div class="page_wrap">
+        <button class="" style="width: 60px;height: 45px;" id="front" onclick="front()">上一页</button>
+        <button class="" style="width: 60px;height: 45px;" id="now" >1</button>
+        <button class="" style="width: 60px;height: 45px;" id="next" onclick="next()">上一页</button>
+    </div>
+</div>
+
+<footer th:replace="footer::body"></footer>
+
+<!-- jQuery -->
+<script th:src="@{/admin/plugins/jquery/jquery.min.js}"></script>
+<!-- Bootstrap 3 -->
+<script th:src="@{/mall/js/bootstrap3.js}"></script>
+<script th:src="@{/mall/js/search.js}" type="text/javascript"></script>
+<script th:src="@{/admin/plugins/sweetalert2/sweetalert2.all.min.js}"></script>
+<script  type="text/javascript">
+    const products = document.querySelectorAll('.product');
+    products.forEach(product => {
+        product.addEventListener('click', () => {
+            window.location.href = product.querySelector('a').href;
+        });
+    });
+
+    const buttons = document.querySelectorAll('button, a');
+    buttons.forEach(button => {
+        button.addEventListener('mouseover', () => {
+            button.classList.add('active');
+        });
+
+        button.addEventListener('mouseout', () => {
+            button.classList.remove('active');
+        });
+    });
+
+    //刷新数据
+    var data = {
+        "page": 1,
+        "limit": 10,
+
+    };
+    $.ajax({
+        type: 'GET',//方法类型
+        url: 'http://175.178.153.116:8080/goods/list',
+        // contentType: 'application/json',
+        // data: JSON.stringify(data),
+        data:data,
+        success: function (result) {
+            if (result.resultCode == 200) {
+                console.log(result);
+                var cacHtml = "";
+                var cacList=result.data.list;
+                /****forEach循环****/
+
+                cacList.forEach(e => {
+                    cacHtml += `        <div class="product">
+
+                                    <a  href="/goods/detail/${e.goodsId}">
+                                    <img scr=${e.goodsCoverImg} alt="${e.goodsId}"
+                                    <p id=${e.goodsId}></p>${e.goodsName}
+                                    </a>
+                                    </div>` ;
+                })
+
+                document.getElementById('products').innerHTML = cacHtml;
+
+            };
+        },
+        error: function () {
+            Swal.fire({
+                text: '操作失败',
+                icon: "error",iconColor:"#f05b72",
+            });
+        }
+    });
+
+    document.getElementById("searchButton").onclick=function (){
+        var searchData = {
+            "page": 1,
+            "limit": 10,
+            "keyword": document.getElementById("searchInput").value
+
+        };
+        $.ajax({
+            type: 'GET',//方法类型
+            url: 'http://175.178.153.116:8080/search',
+            // contentType: 'application/json',
+            // data: JSON.stringify(data),
+            data: searchData,
+            success: function (result) {
+                var cacHtml = "";
+                var cacList=result.data.list;
+                /****forEach循环****/
+                console.log(searchData)
+                console.log(result)
+                cacList.forEach(e => {
+                    cacHtml += `        <div class="product">
+
+                                   <a  href="/goods/detail/${e.goodsId}">
+                                    <img scr=${e.goodsCoverImg} alt="${e.goodsId}"
+                                    <p id=${e.goodsId}></p>${e.goodsName}
+                                    </a>
+                                    </div>` ;
+                })
+
+                document.getElementById('products').innerHTML = cacHtml;
+            }
+        })
+    }
+    document.getElementById("category1").onclick=function (){
+        var classifyData={
+            "page": 1,
+            "limit": 10,
+            "goodsCategoryId":10,
+
+
+        }
+        $.ajax({
+            type: 'GET',//方法类型
+            url: 'http://175.178.153.116:8080/search',
+            // contentType: 'application/json',
+            // data: JSON.stringify(data),
+            data: classifyData,
+            success: function (result) {
+                var cacHtml = "";
+                var cacList=result.data.list;
+                /****forEach循环****/
+                console.log(classifyData)
+                console.log(result)
+                cacList.forEach(e => {
+                    cacHtml += `        <div class="product">
+
+                                     <a  href="/goods/detail/${e.goodsId}">
+                                    <img scr=${e.goodsCoverImg} alt="${e.goodsId}"
+                                    <p id=${e.goodsId}></p>${e.goodsName}
+                                    </a>
+                                    </div>` ;
+                })
+
+                document.getElementById('products').innerHTML = cacHtml;
+            }
+        })
+    }
+//上一页
+    document.getElementById("front").onclick=function (){
+        var searchData = {
+            "page": 1,
+            "limit": 10,
+        };
+        $.ajax({
+            type: 'GET',//方法类型
+            url: 'http://175.178.153.116:8080/goods/',
+            // contentType: 'application/json',
+            // data: JSON.stringify(data),
+            data: searchData,
+            success: function (result) {
+                var cacHtml = "";
+                var cacList=result.data.list;
+                /****forEach循环****/
+                console.log(searchData)
+                console.log(result)
+                cacList.forEach(e => {
+                    cacHtml += `        <div class="product">
+
+                     g                <a  href="/goods/detail/${e.goodsId}">
+                                    <img scr=${e.goodsCoverImg} alt="${e.goodsId}"
+                                    <p id=${e.goodsId}></p>${e.goodsName}
+                                    </a>
+                                    </div>` ;
+                })
+
+                document.getElementById('products').innerHTML = cacHtml;
+            }
+        })
+    }
+
+    //下一页
+    document.getElementById("next").onclick=function (){
+        var searchData = {
+            "page": 2,
+            "limit": 10,
+        };
+        $.ajax({
+            type: 'GET',//方法类型
+            url: 'http://175.178.153.116:8080/goods/',
+            // contentType: 'application/json',
+            // data: JSON.stringify(data),
+            data: searchData,
+            success: function (result) {
+                var cacHtml = "";
+                var cacList=result.data.list;
+                /****forEach循环****/
+                console.log(searchData)
+                console.log(result)
+                cacList.forEach(e => {
+                    cacHtml += `        <div class="product">
+
+                                     <a  href="/goods/detail/${e.goodsId}">
+                                    <img scr=${e.goodsCoverImg} alt="${e.goodsId}"
+                                    <p id=${e.goodsId}></p>${e.goodsName}
+                                    </a>
+                                    </div>` ;
+                })
+
+                document.getElementById('products').innerHTML = cacHtml;
+            }
+        })
+    }
+
+
+
+
+
+</script>
+</body>
+</html>

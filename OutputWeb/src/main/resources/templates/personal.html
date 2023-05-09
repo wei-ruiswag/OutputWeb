@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<link rel="stylesheet" th:href="@{mall/styles/mall.css}">
+<link rel="stylesheet" th:href="@{mall/styles/page.css}">
+<link rel="stylesheet" th:href="@{mall/styles/search.css}">
+<link rel="Shortcut Icon" href="home/skih/ouput_logo.png" type="image/x-icon" />
+<link rel="stylesheet" href="css/semantic.min.css" >
+<link rel="stylesheet" href="css/style.css">
+<link th:href="@{/mall/css/bootstrap-modal.css}" rel="stylesheet">
+<link rel="stylesheet" th:href="@{'/mall/styles/personal.css'}">
+<link rel="stylesheet" th:href="@{/mall/css/swiper-bundle.min.css}">
+<link rel="stylesheet" th:href="@{/mall/css/iconfont.css}">
+<link rel="stylesheet" th:href="@{/mall/css/common.css}">
+<link rel="stylesheet" th:href="@{/admin/plugins/sweetalert2/sweetalert2.min.css}"/>
+<body>
+<header th:replace="header::body"></header>
+<nav id="nav" th:fragment="nav-fragment">
+    <div class="banner_x center">
+        <a th:href="@{/index}" class="logo"><h1>Output商城</h1></a>
+        <div class="fr">
+        </div>
+    </div>
+</nav>
+<!-- personal -->
+<div id="personal">
+    <div class="self-info center">
+
+        <!-- sidebar -->
+        <div th:replace="personal-sidebar::sidebar-fragment"></div>
+
+        <div class="intro fr">
+            <div class="grzlbt ml40">我的资料 <a href="javascript:openUpdateModal();" onclick="getValue()"
+                                             style="color:#95a8aa;margin-left: 600px; font-size: 12px;">更改个人信息</a>
+            </div>
+            <div class="info_item ml40" ><span>昵称</span><span id="StaticNickName">output</span>
+            </div>
+            <div class="info_item ml40" ><span>手机号码</span><span id="StaticLoginName">output\</span>
+            </div>
+            <div class="info_item ml40"><span>密码</span><span id="">******</span>
+            </div>
+            <div class="info_item ml40" ><span>个性签名</span><span id="StaticIntroduceSign">output</span>
+            </div>
+            <div class="info_item ml40"><span>收货信息</span><span id="StaticAddress">output</span></span>
+            </div>
+
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="content">
+        <!-- 模态框（Modal） -->
+        <div class="modal fade" id="personalInfoModal" tabindex="-1" role="dialog"
+             aria-labelledby="personalInfoModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h6 class="modal-title" id="personalInfoModalLabel">个人信息修改</h6>
+                    </div>
+                    <div class="modal-body">
+                        <form id="personalInfoForm">
+                            <div class="form-group">
+                                <label for="nickName" class="control-label">昵称:</label>
+                                <input type="hidden" id="userId">
+                                <input type="text" class="form-control" id="nickName" name="nickName"
+                                       placeholder="请输入个性签名"
+                                       required="true">
+<!--                                <input type="hidden" id="userId" th:value="${session.userId}">-->
+<!--                                <input type="text" class="form-control" id="nickName" name="nickName"-->
+<!--                                       placeholder="请输入昵称" th:value="${session.nickName}"-->
+<!--                                       required="true">-->
+                            </div>
+                            <div class="form-group">
+                                <label for="introduceSign" class="control-label">个性签名:</label>
+                                <input type="text" class="form-control" id="introduceSign" name="introduceSign"
+                                       placeholder="请输入个性签名"
+                                       required="true">
+                            </div>
+                            <div class="form-group">
+                                <label for="address" class="control-label">收货信息:</label>
+                                <input type="text" class="form-control" id="address" name="address"
+                                       placeholder="请输入收货信息"
+                                       required="true">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" >取消</button>
+                        <button type="button" class="btn btn-primary" id="saveButton" style="background: #252020;border-color: #252020">确认</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.modal -->
+    </div>
+</div>
+
+<footer th:replace="footer::body"></footer>
+
+<!-- jQuery -->
+<script th:src="@{/admin/plugins/jquery/jquery.min.js}"></script>
+<!-- Bootstrap 3 -->
+<script th:src="@{/mall/js/bootstrap3.js}"></script>
+<script th:src="@{/mall/js/search.js}" type="text/javascript"></script>
+<script th:src="@{/admin/plugins/sweetalert2/sweetalert2.all.min.js}"></script>
+<script type="text/javascript">
+    window.onload=function(){
+        console.log(sessionStorage.getItem("loginName"))
+        document.getElementById("StaticNickName").innerText = sessionStorage.getItem("nickName")
+        document.getElementById("StaticLoginName").innerText = sessionStorage.getItem("loginName")
+        var y = sessionStorage.getItem("introduceSign")
+        document.getElementById("StaticIntroduceSign").innerText =y==''?"无":y;
+        var x = sessionStorage.getItem("address")
+        document.getElementById("StaticAddress").innerText = x==''?"无":x;
+        document.getElementById("userId").innerText = sessionStorage.getItem("userId")
+        //document.getElementById("nickName").innerText = sessionStorage.getItem("nickName")
+        document.getElementById("introduceSign").innerText =y==''?"无":y;
+        //document.getElementById("nickName").innerText =sessionStorage.getItem("nickName")
+    }
+    function id(x){
+        if (typeof x == "string") return document.getElementById(x);
+        return x;
+    }
+    function openUpdateModal() {
+        $('#personalInfoModal').modal('show');
+    }
+    function getValue(){
+        var x = sessionStorage.getItem("nickName")
+        var y = sessionStorage.getItem("address")
+        var z = sessionStorage.getItem("introduceSign")
+        $('#nickName').val(x)
+        $('#address').val(y)
+        $('#introduceSign').val(z)
+
+
+    }
+
+    //绑定modal上的保存按钮
+    $('#saveButton').click(function () {
+        var address = $("#address").val();
+        if (address.trim().length < 10) {
+            Swal.fire({
+                text: "请输入正确的收货信息",
+                icon: "error",iconColor:"#f05b72",
+            });
+            return;
+        }
+        var introduceSign = $("#introduceSign").val();
+        if (introduceSign.trim().length < 4) {
+            Swal.fire({
+                text: "请输入正确的个性签名",
+                icon: "error",iconColor:"#f05b72",
+            });
+            return;
+        }
+        var nickName = $("#nickName").val();
+        if (nickName.trim().length < 2) {
+            Swal.fire({
+                text: "请输入正确的昵称",
+                icon: "error",iconColor:"#f05b72",
+            });
+            return;
+        }
+        var userId = sessionStorage.getItem("userId");
+        var data = {
+            "userId": userId,
+            "address": address,
+            "introduceSign": introduceSign,
+            "nickName": nickName
+        };
+        console.log(data)
+        $.ajax({
+            type: 'POST',//方法类型
+            url: 'http://175.178.153.116:8080/personal/updateInfo',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (result) {
+                if (result.resultCode == 200) {
+                    $('#personalInfoModal').modal('hide');
+                    $('#nickName').val(nickName)
+                    sessionStorage.setItem("address",address)
+                    sessionStorage.setItem("nickName",nickName)
+                    sessionStorage.setItem("introduceSign",introduceSign)
+                    window.location.reload();
+                } else {
+                    $('#personalInfoModal').modal('hide');
+                    alert(result.message);
+                }
+                ;
+            },
+            error: function () {
+                Swal.fire({
+                    text: '操作失败',
+                    icon: "error",iconColor:"#f05b72",
+                });
+            }
+        });
+    });
+</script>
+</body>
+</html>

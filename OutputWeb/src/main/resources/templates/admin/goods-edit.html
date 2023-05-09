@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<header th:replace="admin/header::header-fragment"></header>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+    <!-- 引入页面头header-fragment -->
+    <div th:replace="admin/header::header-nav"></div>
+    <!-- 引入工具栏sidebar-fragment -->
+    <div th:replace="admin/sidebar::sidebar-fragment(${path})"></div>
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- Main content -->
+        <div class="content">
+            <div class="container-fluid">
+                <div class="card card-primary card-outline">
+                    <div class="card-header">
+                        <h3 class="card-title">商品信息编辑</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="goodsForm" onsubmit="return false;">
+                            <div class="form-group" style="display:flex;">
+                                <label class="control-label">请选择分类:&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                                <select class="form-control col-sm-3" id="levelOne"
+                                        data-placeholder="请选择分类...">
+                                    <option value="外设">外设</option>
+                                    <option value="周边">周边</option>
+                                </select>&nbsp;
+                                <select class="form-control col-sm-3"
+                                        id="levelTwo"
+                                        data-placeholder="请选择分类...">
+                                    <option value="键盘">键盘</option>
+                                    <option value="鼠标">鼠标</option>
+                                    <option value="键帽">键帽</option>
+                                </select>&nbsp;
+                            </div>
+                            <div class="form-group" style="display:flex;">
+                                <input type="hidden" id="goodsId" name="goodsId"
+                                       th:value="${goods!=null and goods.goodsId!=null }?${goods.goodsId}: 0">
+                                <input type="text" class="form-control col-sm-6" id="goodsName" name="goodsName"
+                                       placeholder="*请输入商品名称(必填)"
+                                       th:value="${goods!=null and goods.goodsName!=null }?${goods.goodsName}: ''"
+                                       required="true">
+                                &nbsp;&nbsp;
+                                <input type="text" class="form-control col-sm-6" id="goodsIntro" name="goodsIntro"
+                                       placeholder="*请输入商品简介(100字以内)"
+                                       th:value="${goods!=null and goods.goodsIntro!=null }?${goods.goodsIntro}: ''"
+                                       required="true">
+                            </div>
+                            <div class="form-group" style="display:flex;">
+                                <input type="number" class="form-control col-sm-6" id="originalPrice"
+                                       name="originalPrice"
+                                       placeholder="*请输入商品价格"
+                                       th:value="${goods!=null and goods.originalPrice!=null }?${goods.originalPrice}: 1"
+                                       required="true">
+                                &nbsp;&nbsp;
+                                <input type="number" class="form-control col-sm-6" id="sellingPrice"
+                                       name="sellingPrice"
+                                       placeholder="*请输入商品售卖价"
+                                       th:value="${goods!=null and goods.sellingPrice!=null }?${goods.sellingPrice}: 1"
+                                       required="true">
+                            </div>
+                            <div class="form-group" style="display:flex;">
+                                <input type="number" class="form-control col-sm-6" id="stockNum" name="stockNum"
+                                       placeholder="*请输入商品库存数"
+                                       th:value="${goods!=null and goods.stockNum!=null }?${goods.stockNum}: 0"
+                                       required="true">
+                                &nbsp;&nbsp;
+                                <input type="text" class="form-control col-sm-6" id="tag" name="tag"
+                                       placeholder="*请输入商品小标签"
+                                       th:value="${goods!=null and goods.tag!=null }?${goods.tag}: ''"
+                                       required="true">
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">上架状态:&nbsp;</label>
+                                <input name="goodsSellStatus" type="radio" id="goodsSellStatusTrue" checked=true
+                                       th:checked="${null==goods||(null !=goods and null !=goods.goodsSellStatus and goods.goodsSellStatus==0)} ?true:false"
+                                       value="0"/>&nbsp;上架&nbsp;
+                                <input name="goodsSellStatus" type="radio" id="goodsSellStatusFalse" value="1"
+                                       th:checked="${null !=goods and null !=goods.goodsSellStatus and goods.goodsSellStatus==1} ?true:false"/>&nbsp;下架&nbsp;
+                            </div>
+                            <div class="form-group">
+                                <div class="form-group">
+                                    <div class="col-sm-4">
+                                        </th:block>
+                                        <th:block th:if="${null == goods}">
+                                            <img id="goodsCoverImg" src="/admin/dist/img/img-upload.png"
+                                                 style="height: 64px;width: 64px;">
+                                        </th:block>
+                                        <th:block th:unless="${null == goods}">
+                                            <img id="goodsCoverImg" th:src="${goods.goodsCoverImg}"
+                                                 style="width:160px ;height: 160px;display:block;">
+                                        </th:block>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="form-group">
+                                    <div class="col-sm-4">
+                                        <button class="btn btn-info" style="margin-bottom: 5px;"
+                                                id="uploadGoodsCoverImg">
+                                            <i class="fa fa-picture-o"></i>&nbsp;上传商品主图
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" style="border: 1px solid #ccc;">
+                                <div id="editor-toolbar" class="editor-toolbar" style="border-bottom: 1px solid #ccc;"></div>
+                                <input type="hidden" class="editor-text" th:value="${goods!=null and goods.goodsDetailContent !=null}?${goods.goodsDetailContent}: ''">
+                                <div id="editor-text-area" class="editor-text-area" style="height: 750px"></div>
+                            </div>
+                            <div class="form-group">
+                                <!-- 按钮 -->
+                                &nbsp;<button class="btn btn-info float-right" style="margin-left: 5px;"
+                                              id="saveButton">保存商品
+                            </button>&nbsp;
+                                &nbsp;<button class="btn btn-secondary float-right" style="margin-left: 5px;"
+                                              id="cancelButton">返回商品列表
+                            </button>&nbsp;
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div><!-- /.container-fluid -->
+        </div>
+    </div>
+    <!-- /.content-wrapper -->
+    <!-- 引入页脚footer-fragment -->
+    <div th:replace="admin/footer::footer-fragment"></div>
+</div>
+<!-- jQuery -->
+<script th:src="@{/admin/plugins/jquery/jquery.min.js}"></script>
+<!-- Bootstrap 4 -->
+<script th:src="@{/admin/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<!-- AdminLTE App -->
+<script th:src="@{/admin/dist/js/adminlte.min.js}"></script>
+<!-- sweetalert -->
+<script th:src="@{/admin/plugins/sweetalert2/sweetalert2.all.min.js}"></script>
+<!-- ajaxupload -->
+<script th:src="@{/admin/plugins/ajaxupload/ajaxupload.js}"></script>
+<!-- wangEditor -->
+<script th:src="@{/admin/plugins/wangeditor-5.1.23/index.js}"></script>
+<script th:src="@{/admin/dist/js/public.js}"></script>
+
+<script type="text/javascript">
+    var editor;
+
+    $(function () {
+
+        //富文本编辑器 用于商品详情编辑
+        const E = window.wangEditor;
+
+        const editorConfig = { MENU_CONF: {} }
+        editorConfig.MENU_CONF['uploadImage'] = {
+            //配置服务端图片上传地址
+            server: '/admin/upload/files',
+            // 超时时间5s
+            timeout: 5 * 1000,
+            fieldName: 'files',
+            // 选择文件时的类型限制，默认为 ['image/*']
+            allowedFileTypes: ['image/*'],
+            // 限制图片大小 4M
+            maxFileSize: 4 * 1024 * 1024,
+            base64LimitSize: 5 * 1024,
+
+            onBeforeUpload(file) {
+                console.log('onBeforeUpload', file)
+
+                return file // will upload this file
+                // return false // prevent upload
+            },
+            onProgress(progress) {
+                console.log('onProgress', progress)
+            },
+            onSuccess(file, res) {
+                console.log('onSuccess', file, res)
+            },
+            onFailed(file, res) {
+                alert(res.message)
+                console.log('onFailed', file, res)
+            },
+            onError(file, err, res) {
+                alert(err.message)
+                console.error('onError', file, err, res)
+            },
+            customInsert: function (result,insertImgFn) {
+                if (result != null && result.resultCode == 200) {
+                    // insertImgFn 可把图片插入到编辑器，传入图片 src ，执行函数即可
+                    result.data.forEach(img => {
+                        insertImgFn(img)
+                    });
+                } else if (result != null && result.resultCode != 200) {
+                    Swal.fire({
+                        text: result.message,
+                        icon: "error",iconColor:"#f05b72",
+                    });
+                } else {
+                    Swal.fire({
+                        text: "error",
+                        icon: "error",iconColor:"#f05b72",
+                    });
+                }
+            }
+        }
+
+        editor = E.createEditor({
+            selector: '#editor-text-area',
+            html: $(".editor-text").val(),
+            config: editorConfig
+        })
+
+        const toolbar = E.createToolbar({
+            editor,
+            selector: '#editor-toolbar',
+        })
+
+        //图片上传插件初始化 用于商品预览图上传
+        new AjaxUpload('#uploadGoodsCoverImg', {
+            action: '/admin/upload/file',
+            name: 'file',
+            autoSubmit: true,
+            responseType: "json",
+            onSubmit: function (file, extension) {
+                if (!(extension && /^(jpg|jpeg|png|gif)$/.test(extension.toLowerCase()))) {
+                    Swal.fire({
+                        text: "只支持jpg、png、gif格式的文件！",
+                        icon: "error",iconColor:"#f05b72",
+                    });
+                    return false;
+                }
+            },
+            onComplete: function (file, r) {
+                var url;
+                if (r != null && r.resultCode == 200) {
+                    url = "/admin/upload/" + r.data.split('/').pop()
+                    $("#goodsCoverImg").attr("src", url);
+                    $("#goodsCoverImg").attr("style", "width: 128px;height: 128px;display:block;");
+                    return false;
+                } else if (r != null && r.resultCode != 200) {
+                    Swal.fire({
+                        text: r.message,
+                        icon: "error", iconColor: "#f05b72",
+                    });
+                    return false;
+                } else {
+                    Swal.fire({
+                        text: "error",
+                        icon: "error", iconColor: "#f05b72",
+                    });
+                }
+            }
+        });
+    });
+
+    $('#saveButton').click(function () {
+        var goodsId = $('#goodsId').val();
+        if($('#levelTwo option:selected').val()=="键盘"){
+            var goodsCategoryId = 10
+        }else if($('#levelTwo option:selected').val()=="鼠标"){
+            var goodsCategoryId = 11
+        }else {
+            var goodsCategoryId = 12
+        }
+        console.log(goodsCategoryId)
+        // var goodsCategoryId = $('#levelTwo option:selected').val();
+        var goodsName = $('#goodsName').val();
+        var tag = $('#tag').val();
+        var originalPrice = $('#originalPrice').val();
+        var sellingPrice = $('#sellingPrice').val();
+        var goodsIntro = $('#goodsIntro').val();
+        var stockNum = $('#stockNum').val();
+        var goodsSellStatus = $("input[name='goodsSellStatus']:checked").val();
+        var goodsDetailContent = editor.getHtml();
+        var goodsCoverImg = $('#goodsCoverImg')[0].src;
+
+        if (isNull(goodsName)) {
+            Swal.fire({
+                text: "请输入商品名称",
+                icon: "error",iconColor:"#f05b72",
+            });
+            return;
+        }
+        if (!validLength(goodsName, 100)) {
+            Swal.fire({
+                text: "商品名称过长",
+                icon: "error",iconColor:"#f05b72",
+            });
+            return;
+        }
+        if (isNull(tag)) {
+            Swal.fire({
+                text: "请输入商品小标签",
+                icon: "error",iconColor:"#f05b72",
+            });
+            return;
+        }
+        if (!validLength(tag, 100)) {
+            Swal.fire({
+                text: "标签过长",
+                icon: "error",iconColor:"#f05b72",
+            });
+            return;
+        }
+        if (isNull(goodsIntro)) {
+            Swal.fire({
+                text: "请输入商品简介",
+                icon: "error",iconColor:"#f05b72",
+            });
+            return;
+        }
+        if (!validLength(goodsIntro, 100)) {
+            Swal.fire({
+                text: "简介过长",
+                icon: "error",iconColor:"#f05b72",
+            });
+            return;
+        }
+        if (isNull(originalPrice) || originalPrice < 1) {
+            Swal.fire({
+                text: "请输入商品价格",
+                icon: "error",iconColor:"#f05b72",
+            });
+            return;
+        }
+        if (isNull(sellingPrice) || sellingPrice < 1) {
+            Swal.fire({
+                text: "请输入商品售卖价",
+                icon: "error",iconColor:"#f05b72",
+            });
+            return;
+        }
+        if (isNull(stockNum) || sellingPrice < 0) {
+            Swal.fire({
+                text: "请输入商品库存数",
+                icon: "error",iconColor:"#f05b72",
+            });
+            return;
+        }
+        if (isNull(goodsSellStatus)) {
+            Swal.fire({
+                text: "请选择上架状态",
+                icon: "error",iconColor:"#f05b72",
+            });
+            return;
+        }
+        if (isNull(goodsDetailContent)) {
+            Swal.fire({
+                text: "请输入商品介绍",
+                icon: "error",iconColor:"#f05b72",
+            });
+            return;
+        }
+        if (!validLength(goodsDetailContent, 50000)) {
+            Swal.fire({
+                text: "商品介绍内容过长",
+                icon: "error",iconColor:"#f05b72",
+            });
+            return;
+        }
+        if (isNull(goodsCoverImg) || goodsCoverImg.indexOf('img-upload') != -1) {
+            Swal.fire({
+                text: "封面图片不能为空",
+                icon: "error",iconColor:"#f05b72",
+            });
+            return;
+        }
+        var url = 'http://175.178.153.116:8080/admin/goods/save';
+        var swlMessage = '保存成功';
+        var data = {
+            "goodsName": goodsName,
+            "goodsIntro": goodsIntro,
+            "goodsCategoryId": goodsCategoryId,
+            "tag": tag,
+            "originalPrice": originalPrice,
+            "sellingPrice": sellingPrice,
+            "stockNum": stockNum,
+            "goodsDetailContent": goodsDetailContent,
+            "goodsCoverImg": goodsCoverImg,
+            "goodsCarousel": goodsCoverImg,
+            "goodsSellStatus": goodsSellStatus
+        };
+        if (goodsId > 0) {
+            url = 'http://175.178.153.116:8080/admin/goods/update';
+            swlMessage = '修改成功';
+            data = {
+                "goodsId": goodsId,
+                "goodsName": goodsName,
+                "goodsIntro": goodsIntro,
+                "goodsCategoryId": goodsCategoryId,
+                "tag": tag,
+                "originalPrice": originalPrice,
+                "sellingPrice": sellingPrice,
+                "stockNum": stockNum,
+                "goodsDetailContent": goodsDetailContent,
+                "goodsCoverImg": goodsCoverImg,
+                "goodsCarousel": goodsCoverImg,
+                "goodsSellStatus": goodsSellStatus
+            };
+        }
+        console.log(data);
+        $.ajax({
+            type: 'POST',//方法类型
+            url: url,
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (result) {
+                if (result.resultCode == 200) {
+                    Swal.fire({
+                        text: swlMessage,
+                        icon: "success",iconColor:"#1d953f",
+                        showCancelButton: false,
+                        confirmButtonColor: '#1baeae',
+                        confirmButtonText: '返回商品列表',
+                        confirmButtonClass: 'btn btn-success',
+                        buttonsStyling: false
+                    }).then(function () {
+                        window.location.href = "/admin/goods";
+                    })
+                } else {
+                    Swal.fire({
+                        text: result.message,
+                        icon: "error",iconColor:"#f05b72",
+                    });
+                }
+                ;
+            },
+            error: function () {
+                Swal.fire({
+                    text: "操作失败",
+                    icon: "error",iconColor:"#f05b72",
+                });
+            }
+        });
+    });
+
+    $('#cancelButton').click(function () {
+        window.location.href = "/admin/goods";
+    });
+
+    // $('#levelOne').on('change', function () {
+    //     $.ajax({
+    //         url: '/admin/categories/listForSelect?categoryId=' + $(this).val(),
+    //         type: 'GET',
+    //         success: function (result) {
+    //             if (result.resultCode == 200) {
+    //                 var levelTwoSelect = '';
+    //                 var secondLevelCategories = result.data.secondLevelCategories;
+    //                 var length2 = secondLevelCategories.length;
+    //                 for (var i = 0; i < length2; i++) {
+    //                     levelTwoSelect += '<option value=\"' + secondLevelCategories[i].categoryId + '\">' + secondLevelCategories[i].categoryName + '</option>';
+    //                 }
+    //                 $('#levelTwo').html(levelTwoSelect);
+    //                 var levelThreeSelect = '';
+    //                 var thirdLevelCategories = result.data.thirdLevelCategories;
+    //                 var length3 = thirdLevelCategories.length;
+    //                 for (var i = 0; i < length3; i++) {
+    //                     levelThreeSelect += '<option value=\"' + thirdLevelCategories[i].categoryId + '\">' + thirdLevelCategories[i].categoryName + '</option>';
+    //                 }
+    //                 $('#levelThree').html(levelThreeSelect);
+    //             } else {
+    //                 Swal.fire({
+    //                     text: result.message,
+    //                     icon: "error",iconColor:"#f05b72",
+    //                 });
+    //             }
+    //             ;
+    //         },
+    //         error: function () {
+    //             Swal.fire({
+    //                 text: "操作失败",
+    //                 icon: "error",iconColor:"#f05b72",
+    //             });
+    //         }
+    //     });
+    // });
+    //
+    // $('#levelTwo').on('change', function () {
+    //     $.ajax({
+    //         url: '/admin/categories/listForSelect?categoryId=' + $(this).val(),
+    //         type: 'GET',
+    //         success: function (result) {
+    //             if (result.resultCode == 200) {
+    //                 var levelThreeSelect = '';
+    //                 var thirdLevelCategories = result.data.thirdLevelCategories;
+    //                 var length = thirdLevelCategories.length;
+    //                 for (var i = 0; i < length; i++) {
+    //                     levelThreeSelect += '<option value=\"' + thirdLevelCategories[i].categoryId + '\">' + thirdLevelCategories[i].categoryName + '</option>';
+    //                 }
+    //                 $('#levelThree').html(levelThreeSelect);
+    //             } else {
+    //                 Swal.fire({
+    //                     text: result.message,
+    //                     icon: "error",iconColor:"#f05b72",
+    //                 });
+    //             }
+    //             ;
+    //         },
+    //         error: function () {
+    //             Swal.fire({
+    //                 text: "操作失败",
+    //                 icon: "error",iconColor:"#f05b72",
+    //             });
+    //         }
+    //     });
+    // });
+
+</script>
+</body>
+</html>

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<link rel="stylesheet" th:href="@{mall/styles/mall.css}">
+<link rel="stylesheet" th:href="@{mall/styles/page.css}">
+<link rel="stylesheet" th:href="@{mall/styles/search.css}">
+<link rel="Shortcut Icon" href="home/skih/ouput_logo.png" type="image/x-icon" />
+<link rel="stylesheet" href="css/semantic.min.css" >
+<link rel="stylesheet" href="css/style.css">
+<link th:href="@{/mall/css/bootstrap-modal.css}" rel="stylesheet">
+<link rel="stylesheet" th:href="@{'/mall/styles/order-settle.css'}">
+<link rel="stylesheet" th:href="@{'/mall/styles/order-detail.css'}">
+<link rel="stylesheet" th:href="@{/mall/css/swiper-bundle.min.css}">
+<link rel="stylesheet" th:href="@{/mall/css/iconfont.css}">
+<link rel="stylesheet" th:href="@{/mall/css/common.css}">
+<link rel="stylesheet" th:href="@{/admin/plugins/sweetalert2/sweetalert2.min.css}"/>
+<body>
+<header th:replace="header::body"></header>
+<nav id="nav" th:fragment="nav-fragment">
+    <div class="banner_x center">
+        <a th:href="@{/index}" class="logo"><h1>Output商城</h1></a>
+        <div class="fr">
+        </div>
+    </div>
+</nav>
+
+<!-- personal -->
+<div id="personal">
+    <div class="self-info center">
+
+        <!-- sidebar -->
+        <div th:replace="personal-sidebar::sidebar-fragment"></div>
+
+        <div class="intro fr">
+            <div class="uc-box uc-main-box">
+                <div class="uc-content-box order-view-box">
+                    <div class="box-hd">
+                        <h1 class="title">填写并核对订单信息</h1>
+                        <div class="more clearfix">
+                            <div class="actions">
+                                <a onclick="saveOrder()"
+                                   class="btn btn-small btn-primary" title="提交订单"
+                                   style="background:#252020; border-color:#252020;">提交订单</a>
+                                <!--                                <a id="saveOrder" class="btn btn-small btn-primary" title="提交订单">提交订单</a>-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-bd">
+                        <div class="uc-order-item uc-order-item-pay">
+                            <div class="order-detail">
+
+                                <div class="order-summary">
+                                    <div class="order-progress">
+                                        <ol class="progress-list clearfix progress-list-5">
+                                            <li class="step step-done">
+                                                <div class="progress"><span class="text">购物车</span></div>
+                                                <div class="info"></div>
+                                            </li>
+                                            <li class="step step-active">
+                                                <div class="progress"><span class="text">下单</span></div>
+                                                <div class="info"></div>
+                                            </li>
+                                            <li class="step">
+                                                <div class="progress"><span class="text">付款</span></div>
+                                                <div class="info"></div>
+                                            </li>
+                                            <li class="step">
+                                                <div class="progress"><span class="text">出库</span></div>
+                                                <div class="info"></div>
+                                            </li>
+                                            <li class="step">
+                                                <div class="progress"><span class="text">交易成功</span></div>
+                                                <div class="info"></div>
+                                            </li>
+                                        </ol>
+                                    </div>
+                                </div>
+                                <table class="order-items-table">
+                                    <tbody>
+
+                                    <th:block th:each="item : ${myShoppingCartItems}">
+                                        <tr>
+                                            <td class="col col-thumb">
+                                                <div class="figure figure-thumb">
+                                                    <a target="_blank" th:href="@{'/goods/detail/'+${item.goodsId}}">
+                                                        <img th:src="@{${item.goodsCoverImg}}"
+                                                             width="80" height="80" alt="">
+                                                    </a>
+                                                </div>
+                                            </td>
+                                            <td class="col col-name">
+                                                <p class="name">
+                                                    <a target="_blank" th:href="@{'/goods/detail/'+${item.goodsId}}"
+                                                       th:text="${item.goodsName}">newbee</a>
+                                                </p>
+                                            </td>
+                                            <td class="col col-price"><p class="price"
+                                                                         th:text="${item.sellingPrice+'元 x '+item.goodsCount}">
+                                                1299元 × 1</p></td>
+                                            <td class="col col-actions">
+                                            </td>
+                                        </tr>
+                                    </th:block>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div id="editAddr" class="order-detail-info">
+                                <h3>收货信息</h3>
+                                <table class="info-table">
+                                    <tbody>
+                                    <tr>
+                                        <th>收货地址：</th>
+                                        <td class="user_address_label"
+                                            id="StaticAddress">
+                                            Output
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <div class="actions">
+                                    <a class="btn btn-small btn-line-gray J_editAddr"
+                                       href="javascript:openUpdateModal();">修改</a>
+                                </div>
+                            </div>
+                            <div id="editTime" class="order-detail-info">
+                                <h3>支付方式</h3>
+                                <table class="info-table">
+                                    <tbody>
+                                    <tr>
+                                        <th>支付方式：</th>
+                                        <td>在线支付</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <div class="actions">
+                                </div>
+                            </div>
+                            <div class="order-detail-total">
+                                <table class="total-table">
+                                    <tbody>
+                                    <tr>
+                                        <th>商品总价：</th>
+                                        <td><span class="num" th:text="${priceTotal+'.00'}">1299.00</span>元</td>
+                                    </tr>
+                                    <tr>
+                                        <th>运费：</th>
+                                        <td><span class="num">0</span>元</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="total">应付金额：</th>
+                                        <td class="total"><span class="num" th:text="${priceTotal+'.00'}">1299.00</span>元
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="personalInfoModal" tabindex="-1" role="dialog"
+             aria-labelledby="personalInfoModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h6 class="modal-title" id="personalInfoModalLabel">地址修改</h6>
+                    </div>
+                    <div class="modal-body">
+                        <form id="personalInfoForm">
+                            <div class="form-group">
+                                <input type="hidden" id="userId">
+                                <label for="address" class="control-label">收货地址:</label>
+                                <input type="text" class="form-control" id="address" name="address"
+                                       placeholder="请输入收货地址"
+                                       required="true">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-primary" id="saveButton"
+                                style="background:#252020; border-color:#252020;">确认</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+</div>
+
+
+<footer th:replace="footer::body"></footer>
+
+<!-- jQuery -->
+<script th:src="@{/admin/plugins/jquery/jquery.min.js}"></script>
+<script th:src="@{/mall/js/search.js}" type="text/javascript"></script>
+<script th:src="@{/admin/plugins/sweetalert2/sweetalert2.all.min.js}"></script>
+<script th:src="@{/mall/js/bootstrap3.js}"></script>
+<script type="text/javascript">
+    window.onload = function (){
+        document.getElementById("userId").innerText = sessionStorage.getItem("userId")
+        var x = sessionStorage.getItem("address")
+        console.log(x)
+        document.getElementById("StaticAddress").innerText = x==''?"无":x;
+        document.getElementById("address").innerText = x==''?"无":x;
+    }
+    function saveOrder(){
+        //var userId=$("#userId").val();
+        var userId=sessionStorage.getItem("userId")
+        var userAddress = $(".user_address_label").html();
+        console.log(userId)
+        console.log(userAddress)
+        if (userAddress == '' || userAddress == '无') {
+            Swal.fire({
+                text: "请填写收货信息",
+                icon: "error",iconColor:"#f05b72",
+            });
+            return;
+        }
+        if (userAddress.trim().length < 10) {
+            Swal.fire({
+                text: "请输入正确的收货信息",
+                icon: "error",iconColor:"#f05b72",
+            });
+            return;
+        }
+        var data={
+            "userId": userId,
+            "address": userAddress
+
+        }
+        // data= encodeURI(encodeURI(data));
+        console.log(data)
+        // window.location.href = '../saveOrder';
+        $.ajax({
+            type: 'POST',//方法类型
+            url: 'http://175.178.153.116:8080/saveCartOrder',
+            // dataType: "json",
+            contentType: 'application/json',
+            data:JSON.stringify(data),
+            success: function (result) {
+                if (result.resultCode == 200) {
+                    console.log(result)
+                    // window.location.reload();
+
+                    window.location.href = '/orders/'+result.message+'?userId='+userId;
+                } else {
+                    console.log(result)
+                    Swal.fire({
+                        text: "操作失败",
+                        icon: "error",iconColor:"#f05b72",
+                    });
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    text: "操作失败",
+                    icon: "error",iconColor:"#f05b72",
+                });
+            }
+        })
+
+    }
+
+    function openUpdateModal() {
+        $('#personalInfoModal').modal('show');
+    }
+
+    //绑定modal上的保存按钮
+    $('#saveButton').click(function () {
+        var address = $("#address").val();
+        // var userId = $("#userId").val();
+        var userId = sessionStorage.getItem("userId")
+        console.log(userId)
+        var data = {
+            "userId": userId,
+            "address": address
+        };
+        $.ajax({
+            type: 'POST',//方法类型
+            url: 'http://175.178.153.116:8080/personal/updateInfo',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (result) {
+                if (result.resultCode == 200) {
+                    $('#personalInfoModal').modal('hide');
+                    sessionStorage.setItem("address",address)
+                    window.location.reload();
+                } else {
+                    $('#personalInfoModal').modal('hide');
+                    Swal.fire({
+                        text: result.message,
+                        icon: "error",iconColor:"#f05b72",
+                    });
+                }
+                ;
+            },
+            error: function () {
+                Swal.fire({
+                    text: '操作失败',
+                    icon: "error",iconColor:"#f05b72",
+                });
+            }
+        });
+    });
+</script>
+</body>
+</html>

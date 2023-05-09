@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>动态详细页面</title>
+    <link rel="stylesheet" th:href="@{mall/styles/mall.css}">
+    <link rel="stylesheet" th:href="@{mall/styles/page.css}">
+    <link rel="stylesheet" th:href="@{mall/styles/search.css}">
+    <link rel="Shortcut Icon" href="home/skih/ouput_logo.png" type="image/x-icon" />
+    <link rel="stylesheet" href="css/semantic.min.css" >
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+<body>
+<header th:replace="header::body"></header>
+<!-- 中间 -->
+<div class="m-padded-tb-max m-container-small">
+    <div class="ui container">
+        <div class="ui attached m-padded-tb-max segment">
+            <h2 class="ui center aligned" style="text-align: center;" id="title">标题</h2>
+
+            <div class="ui horizontal link list" style="width: 100%; text-align: center">
+                <div class="item">
+                    <i class="calendar icon"></i>
+                    发布时间：<span id="time">2020-6-11</span>
+
+                </div>
+                <img id="newsCoverImg" alt="" style="width: 80%; height: auto">
+            </div>
+
+            <div class="m-padded-lr m-padded-tb-max">
+                <p id="content" style="font-size: 18px;"></p>
+            </div>
+            <!--标签-->
+            <div class="m-padded-lr">
+                <div class="ui basic teal label" id="tag"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer th:replace="footer::body"></footer>
+
+<!-- jQuery -->
+<script th:src="@{/admin/plugins/jquery/jquery.min.js}"></script>
+<!-- Bootstrap 3 -->
+<script th:src="@{/mall/js/bootstrap3.js}"></script>
+<script th:src="@{/mall/js/search.js}" type="text/javascript"></script>
+<script th:src="@{/admin/plugins/sweetalert2/sweetalert2.all.min.js}"></script>
+<script  type="text/javascript">
+    const products = document.querySelectorAll('.product');
+    products.forEach(product => {
+        product.addEventListener('click', () => {
+            window.location.href = product.querySelector('a').href;
+        });
+    });
+
+    const buttons = document.querySelectorAll('button, a');
+    buttons.forEach(button => {
+        button.addEventListener('mouseover', () => {
+            button.classList.add('active');
+        });
+
+        button.addEventListener('mouseout', () => {
+            button.classList.remove('active');
+        });
+    });
+
+
+    // //刷新数据
+    // var data = {
+    //     "page": 1,
+    //     "limit": 20,
+    //
+    // };
+
+    /**
+     * 获取url上的参数
+     * @param variable
+     * @returns {boolean|string}
+     */
+    function getQueryVariable(variable) {
+        var query = window.location.search.substring(1);
+        var vars = query.split("&");
+        for (var i=0;i<vars.length;i++) {
+            var pair = vars[i].split("=");
+            if(pair[0] == variable){return pair[1];}
+        }
+        return(false);
+    }
+    let nesid = getQueryVariable('nesid')
+    $.ajax({
+        type: 'GET',//方法类型
+        url: 'http://175.178.153.116:8080/news/detail/' + nesid,
+        // contentType: 'application/json',
+        // data: JSON.stringify(data),
+        // data:data,
+        success: function (result) {
+            if (result.resultCode == 200) {
+                console.log(result);
+                var e=result.data;
+                $('#title').text(`${e.newsTitle}`)
+                $('#content').html(`${e.newsContent}`)
+                $('#time').text(`${e.updateTime}`)
+                $('#newsCoverImg').attr("src",`${e.newsCoverImg}`)
+                $('#tag').text(`${e.tag}`)
+
+
+            };
+        },
+        error: function () {
+            Swal.fire({
+                text: '操作失败',
+                icon: "error",iconColor:"#f05b72",
+            });
+        }
+    });
+
+
+
+
+
+
+
+</script>
+<script src="src/main/resources/static/mall/js/search.js"></script>
+</body>
+</html>
