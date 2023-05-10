@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" th:href="@{/mall/styles/mall.css}">
+    <link rel="stylesheet" th:href="@{/mall/styles/page.css}">
+    <link rel="stylesheet" th:href="@{/mall/styles/search.css}">
+    <link rel="Shortcut Icon" href="home/skih/ouput_logo.png" type="image/x-icon" />
+    <link rel="stylesheet" href="css/semantic.min.css" >
+    <link rel="stylesheet" href="css/style.css">
+</head>
 
-<link rel="stylesheet" th:href="@{mall/styles/mall.css}">
-<link rel="stylesheet" th:href="@{mall/styles/page.css}">
-<link rel="stylesheet" th:href="@{mall/styles/search.css}">
-<link rel="Shortcut Icon" href="home/skih/ouput_logo.png" type="image/x-icon" />
-<link rel="stylesheet" href="css/semantic.min.css" >
-<link rel="stylesheet" href="css/style.css">
 <link th:href="@{/mall/css/bootstrap-modal.css}" rel="stylesheet">
 <link rel="stylesheet" th:href="@{'/mall/styles/order-settle.css'}">
 <link rel="stylesheet" th:href="@{'/mall/styles/order-detail.css'}">
@@ -15,7 +17,8 @@
 <link rel="stylesheet" th:href="@{/mall/css/common.css}">
 <link rel="stylesheet" th:href="@{/admin/plugins/sweetalert2/sweetalert2.min.css}"/>
 <body>
-<header th:replace="header::body"></header>
+<div id="noLoginHeader"><header  th:replace="header::body"></header></div>
+<div id="loginHeader"><header  th:replace="header_login::body"></header></div>
 <nav id="nav" th:fragment="nav-fragment">
     <div class="banner_x center">
         <a th:href="@{/index}" class="logo"><h1>Output商城</h1></a>
@@ -201,6 +204,19 @@
 <script th:src="@{/mall/js/bootstrap3.js}"></script>
 <script type="text/javascript">
     window.onload = function (){
+        if(sessionStorage.length>3){
+            // document.getElementById("noLoginHeader").style.visibility="visible"
+            // document.getElementById("loginHeader").style.visibility="hidden"
+            console.log("LoginHeader")
+            $("#noLoginHeader").hide()
+            $("#loginHeader").show()
+        }else{
+            // document.getElementById("noLoginHeader").style.visibility="visible"
+            // document.getElementById("loginHeader").style.visibility="hidden"
+            console.log("noLoginHeader")
+            $("#noLoginHeader").show()
+            $("#loginHeader").hide()
+        }
         document.getElementById("userId").innerText = sessionStorage.getItem("userId")
         var x = sessionStorage.getItem("address")
         console.log(x)

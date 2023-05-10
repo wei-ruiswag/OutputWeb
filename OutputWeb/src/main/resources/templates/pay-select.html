@@ -15,7 +15,8 @@
 <link rel="stylesheet" th:href="@{/mall/css/common.css}">
 <link rel="stylesheet" th:href="@{/admin/plugins/sweetalert2/sweetalert2.min.css}"/>
 <body>
-<header th:replace="header::body"></header>
+<div id="noLoginHeader"><header  th:replace="header::body"></header></div>
+<div id="loginHeader"><header  th:replace="header_login::body"></header></div>
 <div class="page-main">
     <div class="container confirm-box">
         <form target="_blank" action="#" id="J_payForm" method="post">
@@ -168,6 +169,25 @@
 <!-- jQuery -->
 <script th:src="@{/admin/plugins/jquery/jquery.min.js}"></script>
 <script type="text/javascript">
+
+    window.onload=function(){
+        if(sessionStorage.length>3){
+            // document.getElementById("noLoginHeader").style.visibility="visible"
+            // document.getElementById("loginHeader").style.visibility="hidden"
+            console.log("LoginHeader")
+            $("#noLoginHeader").hide()
+            $("#loginHeader").show()
+        }else{
+            // document.getElementById("noLoginHeader").style.visibility="visible"
+            // document.getElementById("loginHeader").style.visibility="hidden"
+            console.log("noLoginHeader")
+            $("#noLoginHeader").show()
+            $("#loginHeader").hide()
+        }
+    }
+
+
+
     //给出提醒
     $('.J_bank').click(function () {
         alert('暂不支持，请耐心等候');

@@ -35,6 +35,7 @@ public class MyWebMvcConfigurer implements WebMvcConfigurer {
                 .excludePathPatterns("/admin/plugins/**");
         // 商城页面登录拦截
         registry.addInterceptor(loginInterceptor)
+//                .excludePathPatterns("/admin")
                 .excludePathPatterns("/admin/**")
                 .excludePathPatterns("/register")
                 .excludePathPatterns("/login")

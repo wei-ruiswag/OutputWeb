@@ -16,7 +16,7 @@ public class GoodsController {
     @GetMapping({"/goods/detail/{goodsId}"})
     public String detailPage(HttpServletRequest request, @PathVariable("goodsId") Long goodsId) throws Exception {
         HttpRequest handle = new HttpRequest();
-        Result res= JSON.parseObject(handle.get("http://175.178.153.116:8083/goods/detail/"+goodsId), Result.class);
+        Result res= JSON.parseObject(handle.get("http://175.178.153.116:8080/goods/detail/"+goodsId), Result.class);
         //GoodsDetailVO goodsDetailVO = JSON.parseObject(handle.get("http://175.178.153.116:8080/goods/detail/10005"), GoodsDetailVO.class);
         String js=JSON.toJSONString(res.getData());
         System.out.print(res.getData());

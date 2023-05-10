@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Output商城-购物车</title>
-    <link rel="stylesheet" th:href="@{mall/styles/mall.css}">
-    <link rel="stylesheet" th:href="@{mall/styles/page.css}">
-    <link rel="stylesheet" th:href="@{mall/styles/search.css}">
+    <link rel="stylesheet" th:href="@{/mall/styles/mall.css}">
+    <link rel="stylesheet" th:href="@{/mall/styles/page.css}">
+    <link rel="stylesheet" th:href="@{/mall/styles/search.css}">
     <link rel="Shortcut Icon" href="home/skih/ouput_logo.png" type="image/x-icon" />
     <link rel="stylesheet" href="css/semantic.min.css" >
     <link rel="stylesheet" href="css/style.css">
@@ -16,7 +16,8 @@
     <link rel="stylesheet" th:href="@{/admin/plugins/sweetalert2/sweetalert2.min.css}"/>
 </head>
 <body>
-<header th:replace="header::body"></header>
+<div id="noLoginHeader"><header  th:replace="header::body"></header></div>
+<div id="loginHeader"><header  th:replace="header_login::body"></header></div>
 <div id="cart">
     <div class="banner_x center">
 <!--        <a th:href="@{/index}" target="_blank">-->
@@ -114,6 +115,20 @@
 <script th:src="@{/admin/plugins/sweetalert2/sweetalert2.all.min.js}"></script>
 <script th:inline="javascript" type="text/javascript" >
     window.onload = function (){
+        if(sessionStorage.length>3){
+            // document.getElementById("noLoginHeader").style.visibility="visible"
+            // document.getElementById("loginHeader").style.visibility="hidden"
+            console.log("LoginHeader")
+            $("#noLoginHeader").hide()
+            $("#loginHeader").show()
+        }else{
+            // document.getElementById("noLoginHeader").style.visibility="visible"
+            // document.getElementById("loginHeader").style.visibility="hidden"
+            console.log("noLoginHeader")
+            $("#noLoginHeader").show()
+            $("#loginHeader").hide()
+        }
+
         var userId = sessionStorage.getItem("userId")
         if(userId == null)  window.location.href='/login'
         // var x =[[${myShoppingCartItems}]]
@@ -135,7 +150,7 @@
      */
     function settle() {
         var userId = sessionStorage.getItem("userId")
-        window.location.href = '/cart/settle?userId='+userId
+        window.location.href = '/cart/settle'
     }
 
     /**
@@ -229,27 +244,5 @@
         )
         ;
     }
-    // $(document).ready(function () {
-    //     //获得文本框对象
-    //     //var t='goodsCount' + id;
-    //     var t = $("text_box");
-    //     //初始化数量为1,并失效减
-    //     $('#min').attr('disabled', true);
-    //     //数量增加操作
-    //     $("#add").click(function () {
-    //         // 给获取的val加上绝对值，避免出现负数
-    //         t.val(Math.abs(parseInt(t.val())) + 1);
-    //         if (parseInt(t.val()) != 1) {
-    //             $('#min').attr('disabled', false);
-    //         };
-    //     })
-    //     //数量减少操作
-    //     $("#min").click(function () {
-    //         t.val(Math.abs(parseInt(t.val())) - 1);
-    //         if (parseInt(t.val()) == 1) {
-    //             $('#min').attr('disabled', true);
-    //         };
-    //     })
-    // });
 </script>
 </html>

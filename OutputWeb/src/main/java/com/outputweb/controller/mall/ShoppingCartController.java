@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.outputweb.common.Constants;
 import com.outputweb.controller.vo.ShoppingCartItemVO;
 import com.outputweb.utils.HttpRequest;
 import com.outputweb.utils.Result;
@@ -23,11 +24,12 @@ import java.util.List;
 @Controller
 public class ShoppingCartController {
     @GetMapping("/cart")
-    public String cartListPage(HttpServletRequest request, HttpSession httpSession, @RequestParam("userId") Long userId) throws java.lang.Exception {
+    public String cartListPage(HttpServletRequest request, HttpSession httpSession) throws java.lang.Exception {
 //        Long userId = (Long)request.getAttribute("userId");
 //        System.out.println(userId);
+        Long userId = (Long)httpSession.getAttribute(Constants.MALL_USER_SESSION_KEY);
         HttpRequest handle = new HttpRequest();
-        Result res  = JSON.parseObject(handle.get("http://175.178.153.116:8083/cart?userId="+userId), Result.class);
+        Result res  = JSON.parseObject(handle.get("http://175.178.153.116:8080/cart?userId="+userId), Result.class);
         List<ShoppingCartItemVO> myShoppingCartItems = JSONArray.parseArray(JSON.toJSONString(res.getData()),ShoppingCartItemVO.class);
 //        System.out.print(res.getData());
 //        System.out.print(myShoppingCartItems.stream().mapToInt(ShoppingCartItemVO::getGoodsCount).sum());
@@ -59,7 +61,8 @@ public class ShoppingCartController {
 
     @GetMapping("/cart/settle")
     public String settlePage(HttpServletRequest request,
-                             HttpSession httpSession,@RequestParam("userId") Long userId) throws java.lang.Exception {
+                             HttpSession httpSession) throws java.lang.Exception {
+        Long userId = (Long)httpSession.getAttribute(Constants.MALL_USER_SESSION_KEY);
         HttpRequest handle = new HttpRequest();
         Result res  = JSON.parseObject(handle.get("http://175.178.153.116:8080/cart?userId="+userId), Result.class);
         System.out.println(userId);

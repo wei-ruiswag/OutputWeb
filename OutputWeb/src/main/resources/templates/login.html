@@ -101,14 +101,13 @@
                     window.sessionStorage.setItem("introduceSign",result.data.introduceSign);
                     // console.log(window.sessionStorage.getItem("user").toString());
                     setLoginState(result.data.userId);
-                    // window.location.href = "/personal"
                 } else {
                     Swal.fire({
                         text: result.message,
                         icon: "error",iconColor:"#f05b72",
                     });
                 }
-                ;
+
             },
             error: function () {
                 Swal.fire({

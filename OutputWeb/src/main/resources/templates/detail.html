@@ -1,31 +1,34 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<link rel="stylesheet" th:href="@{static/mall/styles/mall.css}">
-<link rel="stylesheet" th:href="@{static/mall/styles/page.css}">
-<link rel="stylesheet" th:href="@{static/mall/styles/search.css}">
-<link rel="Shortcut Icon" href="static/home/skih/ouput_logo.png" type="image/x-icon" />
-<link rel="stylesheet" href="static/css/semantic.min.css" >
-<link rel="stylesheet" href="static/css/style.css">
 <link th:href="@{/mall/css/bootstrap-modal.css}" rel="stylesheet">
 <link rel="stylesheet" th:href="@{'/mall/styles/detail.css'}">
 <link rel="stylesheet" th:href="@{/mall/css/swiper-bundle.min.css}">
 <link rel="stylesheet" th:href="@{/mall/css/iconfont.css}">
 <link rel="stylesheet" th:href="@{/mall/css/common.css}">
 <link rel="stylesheet" th:href="@{/admin/plugins/sweetalert2/sweetalert2.min.css}"/>
+<link th:href="@{/mall/styles/header.css}" rel="stylesheet" >
+<link th:href="@{/mall/styles/page.css}" rel="stylesheet" >
+<link th:href="@{/mall/styles/search.css}" rel="stylesheet" >
+<link rel="Shortcut Icon" href="home/skih/ouput_logo.png" type="image/x-icon" />
+<link rel="stylesheet" href="css/semantic.min.css" >
+<link rel="stylesheet" href="css/style.css">
+
+
 <body>
-<header th:replace="header::body"></header>
+<div id="noLoginHeader"><header  th:replace="header::body"></header></div>
+<div id="loginHeader"><header  th:replace="header_login::body"></header></div>
 
 <div id="detail">
-    <!-- nav -->
-    <nav id="nav" th:fragment="nav-fragment">
-        <div class="banner_x center">
-            <a th:href="@{/index}" class="logo"><h1>Output商城</h1></a>
-            <div class="fr">
+<!--    &lt;!&ndash; nav &ndash;&gt;-->
+<!--    <nav id="nav" th:fragment="nav-fragment">-->
+<!--        <div class="banner_x center">-->
+<!--            <a th:href="@{/index}" class="logo"><h1>Output商城</h1></a>-->
+<!--            <div class="fr">-->
 
-            </div>
-        </div>
-    </nav>
+<!--            </div>-->
+<!--        </div>-->
+<!--    </nav>-->
     <div class="dc">
         <div class="content w">
             <div class="title fl">商品详情</div>
@@ -100,6 +103,28 @@
 <script th:src="@{/admin/plugins/sweetalert2/sweetalert2.all.min.js}"></script>
 <script th:src="@{/mall/js/search.js}" type="text/javascript"></script>
 <script type="text/javascript">
+
+    window.onload=function(){
+        if(sessionStorage.length>3){
+            // document.getElementById("noLoginHeader").style.visibility="visible"
+            // document.getElementById("loginHeader").style.visibility="hidden"
+            console.log("LoginHeader")
+            $("#noLoginHeader").hide()
+            $("#loginHeader").show()
+        }else{
+            // document.getElementById("noLoginHeader").style.visibility="visible"
+            // document.getElementById("loginHeader").style.visibility="hidden"
+            console.log("noLoginHeader")
+            $("#noLoginHeader").show()
+            $("#loginHeader").hide()
+        }
+    }
+
+
+
+
+
+
     /**
      * 添加到购物车
      */
@@ -115,7 +140,7 @@
         };
         $.ajax({
             type: 'POST',
-            url: 'http://175.178.153.116:8083/cart/save',
+            url: 'http://175.178.153.116:8080/cart/save',
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function (result) {
@@ -163,7 +188,7 @@
         };
         $.ajax({
             type: 'POST',
-            url: 'http://175.178.153.116:8083/cart/save',
+            url: 'http://175.178.153.116:8080/cart/save',
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function (result) {
@@ -177,7 +202,7 @@
                         cancelButtonText: '留在当前页'
                     }).then((flag) => {
                             if (flag.value) {
-                                window.location.href = '/cart?userId='+id;
+                                window.location.href = '/cart';
                             }
                         }
                     );

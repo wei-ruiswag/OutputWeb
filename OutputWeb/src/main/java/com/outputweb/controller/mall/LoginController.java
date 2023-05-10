@@ -25,7 +25,7 @@ public class LoginController {
     @PostMapping({"/state/login"})
     @ResponseBody
     public void setLoginState(@RequestParam("userId") Long userId, HttpSession session){
-        System.out.println("setLoginState:useraId" + userId.toString());
+        System.out.println("setLoginState:userId" + userId.toString());
         session.setAttribute(Constants.MALL_USER_SESSION_KEY,userId);
     }
 }

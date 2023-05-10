@@ -12,7 +12,8 @@
 
 </head>
 <body>
-<header th:replace="header::body"></header>
+<div id="noLoginHeader"><header  th:replace="header::body"></header></div>
+<div id="loginHeader"><header  th:replace="header_login::body"></header></div>
 <div id="newList" class="m-padded-tb-max">
     <div class="ui container">
         <div class="ui stackable grid">
@@ -65,6 +66,26 @@
 <script th:src="@{/admin/plugins/sweetalert2/sweetalert2.all.min.js}"></script>
 
 <script  type="text/javascript">
+
+    window.onload=function(){
+        if(sessionStorage.length>3){
+            // document.getElementById("noLoginHeader").style.visibility="visible"
+            // document.getElementById("loginHeader").style.visibility="hidden"
+            console.log("LoginHeader")
+            $("#noLoginHeader").hide()
+            $("#loginHeader").show()
+        }else{
+            // document.getElementById("noLoginHeader").style.visibility="visible"
+            // document.getElementById("loginHeader").style.visibility="hidden"
+            console.log("noLoginHeader")
+            $("#noLoginHeader").show()
+            $("#loginHeader").hide()
+        }
+    }
+
+
+
+
     const products = document.querySelectorAll('.product');
     products.forEach(product => {
         product.addEventListener('click', () => {
@@ -206,6 +227,6 @@
 
 
 </script>
-<script src="/mall/js/search.js"></script>
+<script src="static/mall/js/search.js"></script>
 </body>
 </html>

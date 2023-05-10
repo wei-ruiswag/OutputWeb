@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class MallController {
     //商品列表
-    @GetMapping({"/mall", "mall.html"})
+    @GetMapping({"/mall"})
     public String mallPage() {
         return "mall";
     }

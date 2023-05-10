@@ -3,6 +3,7 @@ package com.outputweb.controller.admin;
 
 
 
+import com.outputweb.common.Constants;
 import org.springframework.stereotype.Controller;
 
 import org.springframework.web.bind.annotation.*;
@@ -29,21 +30,9 @@ public class AdminController {
     }
 
 
-//    @GetMapping("/profile")
-//    public String profile(HttpServletRequest request) {
-//
-//        request.setAttribute("path", "profile");
-////        request.setAttribute("loginUserName", adminUser.getLoginUserName());
-////        request.setAttribute("nickName", adminUser.getNickName());
-//        return "admin/profile";
-//    }
-
-
-//    @GetMapping("/logout")
-//    public String logout(HttpServletRequest request) {
-//        request.getSession().removeAttribute("loginUserId");
-//        request.getSession().removeAttribute("loginUser");
-//        request.getSession().removeAttribute("errorMsg");
-//        return "admin/login";
-//    }
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request) {
+        request.getSession().removeAttribute(Constants.MALL_USER_SESSION_KEY);
+        return "admin/login";
+    }
 }

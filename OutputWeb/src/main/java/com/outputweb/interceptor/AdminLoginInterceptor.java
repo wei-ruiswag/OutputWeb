@@ -16,14 +16,22 @@ public class AdminLoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object o) throws Exception {
-        String requestServletPath = request.getServletPath();
-        if (requestServletPath.startsWith("/admin") && request.getSession().getAttribute(Constants.MALL_USER_SESSION_KEY) != "1") {
-            request.getSession().setAttribute("errorMsg", "您没有权限！");
-            response.sendRedirect(request.getContextPath() + "/login");
-            return false;
-        } else {
-            request.getSession().removeAttribute("errorMsg");
+//        String requestServletPath = request.getServletPath();
+//        if (requestServletPath.startsWith("/admin") && request.getSession().getAttribute(Constants.MALL_USER_SESSION_KEY) != "1") {
+//            request.getSession().setAttribute("errorMsg", "您没有权限！");
+//            response.sendRedirect(request.getContextPath() + "/login");
+//            return false;
+//        } else {
+//            request.getSession().removeAttribute("errorMsg");
+//            return true;
+//        }
+        System.out.println("interceptor userId:" + request.getSession().getAttribute(Constants.MALL_USER_SESSION_KEY));
+        if (request.getSession().getAttribute(Constants.MALL_USER_SESSION_KEY).toString().equals("1")) {
             return true;
+        } else {
+            response.sendRedirect(request.getContextPath() + "/login");
+            request.getSession().setAttribute("errorMsg", "您没有权限！");
+            return false;
         }
     }
 

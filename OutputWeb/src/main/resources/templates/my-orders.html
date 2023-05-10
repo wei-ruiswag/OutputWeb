@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<link rel="stylesheet" th:href="@{mall/styles/mall.css}">
+<link rel="stylesheet" th:href="@{mall/styles/header.css}">
 <link rel="stylesheet" th:href="@{mall/styles/page.css}">
 <link rel="stylesheet" th:href="@{mall/styles/search.css}">
 <link rel="Shortcut Icon" href="home/skih/ouput_logo.png" type="image/x-icon" />
@@ -15,7 +15,8 @@
 <link rel="stylesheet" th:href="@{/mall/css/common.css}">
 <link rel="stylesheet" th:href="@{/admin/plugins/sweetalert2/sweetalert2.min.css}"/>
 <body>
-<header th:replace="header::body"></header>
+<div id="noLoginHeader"><header  th:replace="header::body"></header></div>
+<div id="loginHeader"><header  th:replace="header_login::body"></header></div>
 
 <!-- personal -->
 <div id="personal">
@@ -167,6 +168,24 @@
         window.location.href = '/orders/'+orderNo+'?userId='+userId;
 
     }
+
+    window.onload=function(){
+        if(sessionStorage.length>3){
+            // document.getElementById("noLoginHeader").style.visibility="visible"
+            // document.getElementById("loginHeader").style.visibility="hidden"
+            console.log("LoginHeader")
+            $("#noLoginHeader").hide()
+            $("#loginHeader").show()
+        }else{
+            // document.getElementById("noLoginHeader").style.visibility="visible"
+            // document.getElementById("loginHeader").style.visibility="hidden"
+            console.log("noLoginHeader")
+            $("#noLoginHeader").show()
+            $("#loginHeader").hide()
+        }
+    }
+
+
 </script>
 </body>
 </html>

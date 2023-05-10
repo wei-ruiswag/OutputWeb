@@ -17,6 +17,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object o) throws Exception {
+        System.out.println("interceptor userId:" + request.getSession().getAttribute(Constants.MALL_USER_SESSION_KEY));
         if (null == request.getSession().getAttribute(Constants.MALL_USER_SESSION_KEY)) {
             response.sendRedirect(request.getContextPath() + "/login");
             return false;

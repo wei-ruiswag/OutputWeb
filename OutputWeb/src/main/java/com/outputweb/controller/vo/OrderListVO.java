@@ -91,11 +91,12 @@ public class OrderListVO implements Serializable {
         this.createTime = createTime;
     }
 
+    public void setOrderItemVOS(List<OrderItemVO> orderItemVOS) {
+        this.orderItemVOS = orderItemVOS;
+    }
     public List<OrderItemVO> getOrderItemVOS() {
         return orderItemVOS;
     }
 
-    public void setOrderItemVOS(List<OrderItemVO> orderItemVOS) {
-        this.orderItemVOS = orderItemVOS;
-    }
+
 }

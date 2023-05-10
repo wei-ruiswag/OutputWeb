@@ -50,6 +50,16 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <!--加载本地jar包-->
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>0.0.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/javax.mail.jar
+            </systemPath>
+        </dependency>
+
     </dependencies>
 
     <build>
